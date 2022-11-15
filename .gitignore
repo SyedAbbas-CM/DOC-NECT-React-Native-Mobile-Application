@@ -1,2 +1,17 @@
 mysql-data/
 Server/node_modules/
+
+myproj/node_modules/
+myproj/.expo/
+myproj/dist/
+myproj/npm-debug.*
+myproj/*.jks
+myproj/*.p8
+myproj/*.p12
+myproj/*.key
+myproj/*.mobileprovision
+myproj/*.orig.*
+myproj/web-build/
+
+# macOS
+myproj/.DS_Store
