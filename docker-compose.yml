@@ -3,7 +3,7 @@ services:
   db: 
     image: mysql:5.7
     ports: 
-      - "3306:3306"
+      - "3336:3306"
     environment:
       MYSQL_DATABASE: 'db'
       MYSQL_ROOT_PASSWORD: '1234'

@@ -14,6 +14,7 @@ const Somebutton2=()=>{
 const HomeScreen = () => {
   const[username,setUsername] = useState('');
   const [password,setPassword] = useState('');
+
    //useEffect(()=>{
    // async function getallData(){
    //   try{
