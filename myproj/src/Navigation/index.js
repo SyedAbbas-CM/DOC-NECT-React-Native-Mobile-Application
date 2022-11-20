@@ -4,18 +4,39 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import SigninScreen from  '../screens/SigninScreen'
 import Register from  '../screens/RegisterScreen'
 import HomeScreen  from '../screens/HomeScreen';
+import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 const Stack = createNativeStackNavigator();
 
+
+const WrapWithKeyboardDismiss = (component) => {
+  return (
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      {component()}
+    </TouchableWithoutFeedback>
+  );
+}
+
 const Navigation = () => {
+
+  const screens = {
+    Signin : () => WrapWithKeyboardDismiss(SigninScreen),
+    Registration : () => WrapWithKeyboardDismiss(Register),
+    HomeScreen : () => WrapWithKeyboardDismiss(HomeScreen)
+  }
+  
   return (
     <NavigationContainer>
-        <Stack.Navigator screenOptions={{contentStyle : { backgroundColor : "#ffffff" }, headerShown:false}}>
-        <Stack.Screen name ="Signin" component={SigninScreen} />
-        <Stack.Screen name ="Registration" component={Register} />
-        <Stack.Screen name ="HomeScreen" component={HomeScreen} />
-
-        </Stack.Navigator>
-      
+      <Stack.Navigator screenOptions={{contentStyle : { backgroundColor : "#ffffff" }, headerShown:false}}>        
+        {
+          Object.keys(screens).map((key, index) => {
+            return (
+                <Stack.Screen name = {key} key={index}>
+                  {screens[key]}
+                </Stack.Screen>
+              )
+          })
+        }
+      </Stack.Navigator>      
     </NavigationContainer>
   )
 }
