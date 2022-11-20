@@ -7,34 +7,21 @@ import HomeScreen  from '../screens/HomeScreen';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 const Stack = createNativeStackNavigator();
 
-
-const WrapWithKeyboardDismiss = (component) => {
-  return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      {component()}
-    </TouchableWithoutFeedback>
-  );
-}
-
 const Navigation = () => {
 
   const screens = {
-    Signin : () => WrapWithKeyboardDismiss(SigninScreen),
-    Registration : () => WrapWithKeyboardDismiss(Register),
-    HomeScreen : () => WrapWithKeyboardDismiss(HomeScreen)
+    Signin : SigninScreen,
+    Registration : Register,
+    HomeScreen : HomeScreen
   }
   
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{contentStyle : { backgroundColor : "#ffffff" }, headerShown:false}}>        
         {
-          Object.keys(screens).map((key, index) => {
-            return (
-                <Stack.Screen name = {key} key={index}>
-                  {screens[key]}
-                </Stack.Screen>
-              )
-          })
+          Object.keys(screens).map((key, index) => 
+                <Stack.Screen name = {key} key={index} component={screens[key]}/>
+          )
         }
       </Stack.Navigator>      
     </NavigationContainer>

@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, {useState} from 'react'
 
 import { Text, TextInput, Button } from 'react-native-paper';
+import { WrapWithKeyboardDismiss } from '../../global';
 import heartBeat from '../../../assets/logo.png';
 
 
@@ -14,16 +15,11 @@ const SigninScreen = () => {
   const [password,setpassword] = useState('');
 
   const onSignIn = () => {
-    console.warn('Sign in');
-    //validate user  
     navigation.navigate('HomeScreen');
   }
 
   const onForgetPassword = () => {
-
-  }
-  const onRegister = () => {
-    navigation.navigate('Registration');
+  
   }
 
   return (
@@ -42,7 +38,7 @@ const SigninScreen = () => {
         </Text>
 
         <TextInput     
-          left= {<TextInput.Icon icon="account"/>} 
+          left= {<TextInput.Icon icon="email"/>} 
           label="Email"
           value={username}
           onChangeText={text => setusername(text)}
@@ -61,6 +57,7 @@ const SigninScreen = () => {
           mode = "outlined"
           outlineColor="#c4c4c4"
           activeOutlineColor="#3796f3"
+          secureTextEntry
         />
         <Button  
           mode="contained" 
@@ -81,7 +78,7 @@ const SigninScreen = () => {
 
         <Button  
           mode="contained" 
-          onPress={onRegister}
+          onPress={() => navigation.navigate("Registration")}
           style= {styles.button}
           buttonColor="transparent"
           textColor="gray">
@@ -107,7 +104,8 @@ const styles = StyleSheet.create({
   },
   input : {
     marginVertical:10, 
-    backgroundColor : "white"
+    backgroundColor : "white",
+    color : 'gray'
   },
   button : {
     marginVertical:10,
@@ -115,7 +113,7 @@ const styles = StyleSheet.create({
   }
 })
 
-export default SigninScreen ;
+export default WrapWithKeyboardDismiss(SigninScreen);
 
 
 

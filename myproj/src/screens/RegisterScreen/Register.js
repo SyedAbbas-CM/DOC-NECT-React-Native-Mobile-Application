@@ -3,6 +3,9 @@ import axios from "axios";
 import React,{useState} from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { Text, TextInput, Button } from 'react-native-paper';
+import { styles, WrapWithKeyboardDismiss } from '../../global';
+
+import userAvatar from '../../../assets/user-avatar.png';
 
 let usernameinput
 let userpassinput
@@ -20,11 +23,13 @@ const Register = () => {
     passwordConfirm : ""
   });
   
-  const updateForm = (key, value) => {
-    setform({key : value, ...form});
+  const updateForm = (field, value) => {
+    const newForm = {...form};
+    newForm[field] = value;
+    setform(newForm);
   }
 
-  const onRegisterPressed=()=>{
+  const onRegister = ()=>{
     console.warn('Registering');
     // axios.post("http://192.168.100.119:8090/login",{
     //   username:usernameinput,
@@ -39,22 +44,72 @@ const Register = () => {
   // usernameinput=username;
   // userpassinput=password;
   return (
-    <View>
+    <View style = {styles.root}>
       <Text
-          variant="displayMedium"
-          style={{textAlign : "center", marginBottom: 30, fontWeight : 'bold'}}>
+          variant="displaySmall"
+          style={{textAlign : "center", marginVertical: 30, fontWeight : 'bold'}}>
           Create an Account
       </Text>
-      <TextInput      
-        label="first name"
+
+      <Image source = {userAvatar} resizeMode = "contain"/>
+      <TextInput     
+        label="First name"
         value={form.firstName}
         onChangeText={text => updateForm("firstName", text)}
-        // style = {{margin:10}}
+        style = {styles.input}
         mode = "outlined"
         outlineColor="#c4c4c4"
-        textColor= "blue"
-        activeOutlineColor="#c4c4c4"
+        activeOutlineColor="#3796f3"
       />
+
+      <TextInput     
+        label="Last name"
+        value={form.lastName}
+        onChangeText={text => updateForm("lastName", text)}
+        style = {styles.input}
+        mode = "outlined"
+        outlineColor="#c4c4c4"
+        activeOutlineColor="#3796f3"
+      />
+
+      <TextInput     
+        label="Email"
+        value={form.email}
+        onChangeText={text => updateForm("email", text)}
+        style = {styles.input}
+        mode = "outlined"
+        outlineColor="#c4c4c4"
+        activeOutlineColor="#3796f3"
+      />
+
+      <TextInput     
+        label="Password"
+        value={form.password}
+        onChangeText={text => updateForm("password", text)}
+        style = {styles.input}
+        mode = "outlined"
+        outlineColor="#c4c4c4"
+        activeOutlineColor="#3796f3"
+        secureTextEntry
+      />
+
+      <TextInput     
+        label="Confirm Password"
+        value={form.passwordConfirm}
+        onChangeText={text => updateForm("passwordConfirm", text)}
+        style = {styles.input}
+        mode = "outlined"
+        outlineColor="#c4c4c4"
+        activeOutlineColor="#3796f3"
+        secureTextEntry
+      />
+        <Button  
+          mode="contained" 
+          onPress={onRegister}
+          style= {styles.button}
+          buttonColor="#3796f3">
+          Register
+        </Button>
       {/* <CustomInput placeholder="Username                                                   " value ={username} setValue={setUsername} secureTextEntry = {false} />
       <CustomInput placeholder="Email                                                  " value ={email} setValue={setEmail} secureTextEntry = {false}/>
       <CustomInput placeholder="Confirm Email                                                  " value ={emailR} setValue={setEmailR} secureTextEntry = {false}/>
@@ -89,7 +144,7 @@ const Register = () => {
 
 
 
-export default Register ;
+export default WrapWithKeyboardDismiss(Register);
 
 
 
