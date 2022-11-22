@@ -1,49 +1,87 @@
 import { View ,Image, StyleSheet, ImageBackground, useWindowDimensions } from 'react-native'
-import React ,{useState} from 'react'
-import { Text, TextInput, Button, Title, Paragraph,  SegmentedButtons} from 'react-native-paper';
+import React ,{useState, useCallback} from 'react'
+import { Text, TextInput, Button, Title, Paragraph,  SegmentedButtons, FAB} from 'react-native-paper';
 import profilePic from "../../../assets/profile.png"
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import ProfileView from '../../components/ProfileView';
+import ActivityView from '../../components/ActivityView';
+import MedicalHistoryView from '../../components/MedicalHistoryView';
+
 
 
 const ProfileScreen = () => {
-    const [tab, setTab] = useState(0);
-    const { height } = useWindowDimensions();
+  const [index, setIndex] = React.useState(0);
+  const [editMode, setEditMode] = React.useState(false);
+
+  const window = useWindowDimensions();
+  const [routes] = useState([
+      { key: 'first', title: 'Profile' },
+      { key: 'second', title: 'History' },
+      { key: 'third', title: 'Activity' },
+    ]);
+
+    const Profile = useCallback(() => {
+      return (
+        <ProfileView editMode = {editMode} />
+      );
+    }, [])
+    
+    const MedicalHistory = useCallback(() => {
+      return (
+        <MedicalHistoryView />
+      );
+    }, [])
+    
+    const Activity = useCallback(() => {
+      return (
+        <ActivityView />
+      );
+    }, [])
+    
+    const renderScene = SceneMap({
+      first:  Profile,
+      second: MedicalHistory,
+      third:  Activity
+    });
+
+    function toggleEditMode() {
+      setEditMode(!editMode);
+    }
 
     return ( 
         <View style={styles.root}>
-            <View style={{backgroundColor:"white", width:'100%', paddingBottom:20}}> 
+            <FAB
+              icon={editMode == 0 ? "pencil" : "pencil-off"}
+              style={styles.fab}
+              onPress={toggleEditMode}
+            />
+
+            {index == 1 && <FAB
+              icon= "plus"
+              style={{...styles.fab, bottom:70}}      
+            />}
+
+            {editMode == 0 &&
+            <View style={{backgroundColor:"white", width:'100%', paddingBottom:10}}> 
+              {/* <Text style={{paddingLeft:10}} variant="bodySmall">points: 69</Text> */}
               <View style={{...styles.centerX, paddingBottom:10}}>
                 <Image source={profilePic}>
                 </Image>
               </View>
-              
+             
               <View style={{...styles.centerX}}>
                 <Text variant="bodyLarge" style={{...styles.centerX}}>Raahim Siddiqi</Text>
                 <Text variant="bodySmall" style={{...styles.centerX}}>User from: 11/22/2001</Text>
               </View>
             </View>
+            }
 
             <View style={{flex:1, width:'100%'}}  >
-              <SegmentedButtons
-                value={tab}
-                onValueChange={setTab}
-                buttons={[
-                  {
-                    value: 'profile',
-                    label: 'Profile',
-                    style: {borderRadius:0, width:'33.3%'},
-                  },
-                  {
-                    value: 'history',
-                    label: 'History',
-                    style: {borderRadius:0, width:'33.33%', },
-                  },
-                  {
-                    value: 'activity',
-                    label: 'Activity',
-                    style: {borderRadius:0, width:'33.3%'},
-                  },
-                ]}
-                style={{width:"100%"}}
+              <TabView
+                navigationState={{ index, routes }}
+                renderScene={renderScene}
+                onIndexChange={setIndex}
+                initialLayout={{ width: window.width }}
               />
             </View>
         </View>
@@ -54,7 +92,7 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
     root : {
       flex:1,
-      marginTop:50
+      marginTop:50.
     },
     input : {
       marginVertical:10, 
@@ -68,11 +106,17 @@ const styles = StyleSheet.create({
     tabs : {
 
     },
+    fab: {
+      position:'absolute',
+      margin: 16,
+      right: 0,
+      bottom: 0,
+      zIndex:99
+    },
     centerX : {
       marginLeft : 'auto', 
       marginRight : 'auto'
     }
   })
-  
 
 export default ProfileScreen;

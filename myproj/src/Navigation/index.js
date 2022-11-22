@@ -4,15 +4,16 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import SigninScreen from  '../screens/SigninScreen'
 import Register from  '../screens/RegisterScreen'
 import HomeScreen  from '../screens/HomeScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 const Stack = createNativeStackNavigator();
 
 const Navigation = () => {
-
   const screens = {
     Signin : SigninScreen,
     Registration : Register,
-    HomeScreen : HomeScreen
+    HomeScreen : HomeScreen,
+    Profile : ProfileScreen,
   }
   
   return (

@@ -1,5 +1,7 @@
-import { View, Text ,Image,StyleSheet, ImageBackground} from 'react-native'
+import { View, Image,StyleSheet, ImageBackground} from 'react-native'
 import React ,{useState} from 'react'
+import { Text, TextInput, Button } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 const Somebutton=()=>{
   console.warn('Sign in');
@@ -11,6 +13,7 @@ const Somebutton2=()=>{
 const HomeScreen = () => {
   const[username,setUsername] = useState('');
   const [password,setPassword] = useState('');
+  const navigation = useNavigation();
 
    //useEffect(()=>{
    // async function getallData(){
@@ -30,6 +33,12 @@ const HomeScreen = () => {
   return (
     <View style = {{flex:1,justifyContent:'center',alignItems:'center'}}>
       <Text>DOCNET HOME SCREEN</Text>
+      <Button  
+          mode="contained" 
+          onPress={() => navigation.navigate("Profile")}
+          buttonColor="#3796f3">
+          Profile
+        </Button>
     </View>
   );
 };
