@@ -24,19 +24,19 @@ const ProfileScreen = () => {
       return (
         <ProfileView editMode = {editMode} />
       );
-    }, [])
+    }, [editMode])
     
     const MedicalHistory = useCallback(() => {
       return (
         <MedicalHistoryView />
       );
-    }, [])
+    }, [editMode])
     
     const Activity = useCallback(() => {
       return (
         <ActivityView />
       );
-    }, [])
+    }, [editMode])
     
     const renderScene = SceneMap({
       first:  Profile,
@@ -50,15 +50,15 @@ const ProfileScreen = () => {
 
     return (
         <View style={styles.root}>   
-            <FAB
+            {index == 0 && <FAB
               icon={editMode == 0 ? "pencil" : "pencil-off"}
               style={styles.fab}
               onPress={toggleEditMode}
-            />
+            />}
 
             {index == 1 && <FAB
               icon= "plus"
-              style={{...styles.fab, bottom:70}}      
+              style={{...styles.fab}}      
             />}
           
             {editMode == 0 &&
