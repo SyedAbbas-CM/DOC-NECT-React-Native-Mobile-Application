@@ -1,4 +1,4 @@
-import { View ,Image, StyleSheet, ImageBackground, useWindowDimensions } from 'react-native'
+import { View ,Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollView } from 'react-native'
 import React ,{useState, useCallback} from 'react'
 import { Text, TextInput, Button, Title, Paragraph,  SegmentedButtons, FAB} from 'react-native-paper';
 import profilePic from "../../../assets/profile.png"
@@ -48,8 +48,8 @@ const ProfileScreen = () => {
       setEditMode(!editMode);
     }
 
-    return ( 
-        <View style={styles.root}>
+    return (
+        <View style={styles.root}>   
             <FAB
               icon={editMode == 0 ? "pencil" : "pencil-off"}
               style={styles.fab}
@@ -60,7 +60,7 @@ const ProfileScreen = () => {
               icon= "plus"
               style={{...styles.fab, bottom:70}}      
             />}
-
+          
             {editMode == 0 &&
             <View style={{backgroundColor:"white", width:'100%', paddingBottom:10}}> 
               {/* <Text style={{paddingLeft:10}} variant="bodySmall">points: 69</Text> */}
@@ -84,6 +84,7 @@ const ProfileScreen = () => {
                 initialLayout={{ width: window.width }}
               />
             </View>
+            
         </View>
      );
 }

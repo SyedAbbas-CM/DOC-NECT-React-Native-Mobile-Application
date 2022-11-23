@@ -9,7 +9,6 @@ const ProfileView = ({editMode}) => {
     const [age, setAge] = useState('')
     const [dob, setDob] = useState('')
     const [gender, setGender] = useState('')
-    const [address, setAddress] = useState('')
     const [city, setCity] = useState('')
     const [about, setAbout] = useState('')
 
@@ -19,14 +18,14 @@ const ProfileView = ({editMode}) => {
             <View style={{...styles.row, flexDirection:"row", width:'100%'}}>
                 <View style={{width:'50%', paddingRight: 10}}>
                     <TextInput style={{...styles.input}}
-                        editable = {editMode == 0 ? true : false}
+                        editable = {editMode == 1 ? true : false}
                         label = "Firstname"
                         mode = "outlined"
                     ></TextInput>
                 </View>
                 <View style={{width:'50%', paddingLeft: 10}}>
                     <TextInput style={{...styles.input}}
-                        editable = {editMode == 0 ? true : false}
+                        editable = {editMode == 1 ? true : false}
                         label = "Lastname"
                         mode = "outlined"
                     ></TextInput>
@@ -35,59 +34,57 @@ const ProfileView = ({editMode}) => {
 
             <View style={{...styles.row}}>
                 <TextInput style={{...styles.input}}
-                    editable = {editMode == 0 ? true : false}
+                    editable = {editMode == 1 ? true : false}
                     label = "Email"
                     mode = "outlined"
                 ></TextInput>
             </View>
 
             <View style={{...styles.row, flexDirection:"row", width:'100%'}}>
-                <View style={{width:'30%', paddingRight: 10}}>
+                <View style={{width:'42%', marginRight: '8%'}}>
                     <TextInput style={{...styles.input}}
-                        editable = {editMode == 0 ? true : false}
+                        editable = {editMode == 1 ? true : false}
                         label = "Age"
                         mode = "outlined"
                     ></TextInput>
                 </View>
-                <View style={{width:'40%', paddingRight: 5, paddingLeft: 5}}>
+
+                <View style={{width:'42%', marginLeft: '8%'}}>
                     <TextInput style={{...styles.input}}
-                        editable = {editMode == 0 ? true : false}
-                        label="D.O.B"
-                        mode = "outlined"
-                    ></TextInput>
-                </View>
-                <View style={{width:'30%', paddingLeft: 10}}>
-                    <TextInput style={{...styles.input}}
-                        editable = {editMode == 0 ? true : false}
+                        editable = {editMode == 1 ? true : false}
                         label = "Gender"
                         mode = "outlined"
                     ></TextInput>
                 </View>
             </View>
 
-            <View style={{...styles.row}}>
-                <TextInput style={{...styles.input}}
-                    editable = {editMode == 0 ? true : false}
-                    label = "Address"
-                    mode = "outlined"
-                ></TextInput>
-            </View>
+            <View style={{...styles.row, flexDirection:"row", width:'100%'}}>
+                <View style={{width:'42%', marginRight: '8%'}}>
+                        <TextInput style={{...styles.input}}
+                            editable = {editMode == 1 ? true : false}
+                            label="D.O.B"
+                            mode = "outlined"
+                        ></TextInput>
+                </View>
 
-            <View style={{...styles.row, width:'30%'}}>
-                <TextInput style={{...styles.input}}
-                    editable = {editMode == 0 ? true : false}
-                    label="City"
-                    mode="outlined"
-                ></TextInput>
+                <View style={{width:'42%', marginLeft: '8%'}}>
+                    <TextInput style={{...styles.input}}
+                        editable = {editMode == 1 ? true : false}
+                        label="City"
+                        mode="outlined"
+                    ></TextInput>
+                </View>
             </View>
 
             <View style={{...styles.row}}>
                 <Text variant='bodyLarge'>About Me</Text>
-                <TextInput style={{...styles.multiline_input}}
-                    editable = {editMode == 0 ? true : false}
+                {console.log(editMode)}
+                <TextInput style={{...styles.multiline_input, backgroundColor: editMode == true ? "yellow" : "black"}}
+                    editable = {editMode == 1 ? true : false}
                     multiline
                     mode = "outlined"
                     numberOfLines={4}
+                   
                 ></TextInput>
             </View>
         </View>
@@ -124,7 +121,6 @@ const styles = StyleSheet.create({
     multiline_input : {
         height: 150,
         maxHeight: 180,
-        backgroundColor : "white",
         color : 'gray'
     }
 })
