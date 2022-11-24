@@ -5,7 +5,8 @@ const db = mysql.createConnection({
     //not a good idea to login as root user btw
     user:'root',
     password:'1234',
-    database: 'db'
+    database: 'db',
+    multipleStatements : true
 });
 
 db.connect((err)=>{
