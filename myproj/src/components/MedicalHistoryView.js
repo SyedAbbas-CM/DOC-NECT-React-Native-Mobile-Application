@@ -1,10 +1,12 @@
 import { View ,Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollView } from 'react-native'
 import { Avatar, Button, Card, Title, Paragraph, useTheme  } from 'react-native-paper';
 import React , {useState} from 'react'
+import { useNavigation } from '@react-navigation/native';
 
 const LeftContent = props => <Avatar.Icon {...props} icon="needle" />
 
 const MedicalHistoryView = () => {
+    const navigation = useNavigation()
     const theme = useTheme();
 
     return (  
@@ -17,7 +19,7 @@ const MedicalHistoryView = () => {
               <Paragraph>Have attempted self-treatment by performing an excorcism and cleansing of the soul. No effect.</Paragraph>
             </Card.Content>
             <Card.Actions>
-              <Button mode="text" textColor={theme.colors.primary}>Edit</Button>
+              <Button onPress={() => navigation.navigate("MedicalHistory")} mode="text" textColor={theme.colors.primary}>Edit</Button>
             </Card.Actions>
           </Card>
 
@@ -28,7 +30,7 @@ const MedicalHistoryView = () => {
               <Paragraph>Problems began due to listening to my friends babble about retarded shit all the time. I am recovered now because I am home.</Paragraph>
             </Card.Content>
             <Card.Actions>
-              <Button mode="text" textColor={theme.colors.primary}>Edit</Button>
+              <Button onPress={() => navigation.navigate("MedicalHistory")} mode="text" textColor={theme.colors.primary}>Edit</Button>
             </Card.Actions>
           </Card>
 
@@ -39,7 +41,7 @@ const MedicalHistoryView = () => {
               <Paragraph>I suspect that my Kneecap has been fractured. Collided hard with a Bear while playing Soccer in the Artic. Included X-ray images for reference.</Paragraph>
             </Card.Content>
             <Card.Actions>
-              <Button mode="text" textColor={theme.colors.primary}>Edit</Button>
+              <Button onPress={() => navigation.navigate("MedicalHistory")} mode="text" textColor={theme.colors.primary}>Edit</Button>
             </Card.Actions>
           </Card>
         </View>
