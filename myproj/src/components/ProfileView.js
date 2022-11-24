@@ -21,6 +21,7 @@ const ProfileView = ({editMode}) => {
                         editable = {editMode == 1 ? true : false}
                         label = "Firstname"
                         mode = "outlined"
+                        disabled = {editMode == true ? false : true}
                     ></TextInput>
                 </View>
                 <View style={{width:'50%', paddingLeft: 10}}>
@@ -28,6 +29,7 @@ const ProfileView = ({editMode}) => {
                         editable = {editMode == 1 ? true : false}
                         label = "Lastname"
                         mode = "outlined"
+                        disabled = {editMode == true ? false : true}
                     ></TextInput>
                 </View>
             </View>
@@ -37,6 +39,7 @@ const ProfileView = ({editMode}) => {
                     editable = {editMode == 1 ? true : false}
                     label = "Email"
                     mode = "outlined"
+                    disabled = {editMode == true ? false : true}
                 ></TextInput>
             </View>
 
@@ -46,6 +49,7 @@ const ProfileView = ({editMode}) => {
                         editable = {editMode == 1 ? true : false}
                         label = "Age"
                         mode = "outlined"
+                        disabled = {editMode == true ? false : true}
                     ></TextInput>
                 </View>
 
@@ -54,6 +58,7 @@ const ProfileView = ({editMode}) => {
                         editable = {editMode == 1 ? true : false}
                         label = "Gender"
                         mode = "outlined"
+                        disabled = {editMode == true ? false : true}
                     ></TextInput>
                 </View>
             </View>
@@ -64,6 +69,7 @@ const ProfileView = ({editMode}) => {
                             editable = {editMode == 1 ? true : false}
                             label="D.O.B"
                             mode = "outlined"
+                            disabled = {editMode == true ? false : true}
                         ></TextInput>
                 </View>
 
@@ -72,18 +78,20 @@ const ProfileView = ({editMode}) => {
                         editable = {editMode == 1 ? true : false}
                         label="City"
                         mode="outlined"
+                        disabled = {editMode == true ? false : true}
                     ></TextInput>
                 </View>
             </View>
 
             <View style={{...styles.row}}>
-                <Text variant='bodyLarge'>About Me</Text>
+                <Text variant='bodyLarge' style={{color: editMode? "black" : "grey"}}>About Me</Text>
                 {console.log(editMode)}
-                <TextInput style={{...styles.multiline_input, backgroundColor: editMode == true ? "yellow" : "black"}}
+                <TextInput style={{...styles.multiline_input}}
                     editable = {editMode == 1 ? true : false}
                     multiline
                     mode = "outlined"
                     numberOfLines={4}
+                    disabled = {editMode == true ? false : true}
                    
                 ></TextInput>
             </View>
@@ -99,7 +107,7 @@ const styles = StyleSheet.create({
     root : {
       flex:1,
       paddingTop: 10,
-      paddingBottom: 40,
+      paddingBottom: 70,
       paddingRight: 25,
       paddingLeft: 25
     },
@@ -121,6 +129,7 @@ const styles = StyleSheet.create({
     multiline_input : {
         height: 150,
         maxHeight: 180,
+        backgroundColor : "white",
         color : 'gray'
-    }
+    },
 })

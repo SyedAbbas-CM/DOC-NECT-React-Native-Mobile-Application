@@ -6,13 +6,13 @@ import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import ProfileView from '../../components/ProfileView';
 import ActivityView from '../../components/ActivityView';
 import MedicalHistoryView from '../../components/MedicalHistoryView';
-
+import { useNavigation } from '@react-navigation/native';
 
 
 const ProfileScreen = () => {
+  const navigation = useNavigation()
   const [index, setIndex] = React.useState(0);
   const [editMode, setEditMode] = React.useState(false);
-
   const window = useWindowDimensions();
   const [routes] = useState([
       { key: 'first', title: 'Profile' },
@@ -24,19 +24,19 @@ const ProfileScreen = () => {
       return (
         <ProfileView editMode = {editMode} />
       );
-    }, [])
+    }, [editMode])
     
     const MedicalHistory = useCallback(() => {
       return (
         <MedicalHistoryView />
       );
-    }, [])
+    }, [editMode])
     
     const Activity = useCallback(() => {
       return (
         <ActivityView />
       );
-    }, [])
+    }, [editMode])
     
     const renderScene = SceneMap({
       first:  Profile,
@@ -50,15 +50,16 @@ const ProfileScreen = () => {
 
     return (
         <View style={styles.root}>   
-            <FAB
-              icon={editMode == 0 ? "pencil" : "pencil-off"}
-              style={styles.fab}
-              onPress={toggleEditMode}
-            />
+            {index == 0 && <FAB
+              icon = {editMode == 0 ? "pencil" : "pencil-off"}
+              style = {styles.fab}
+              onPress = {toggleEditMode}
+            />}
 
             {index == 1 && <FAB
-              icon= "plus"
-              style={{...styles.fab, bottom:70}}      
+              icon = "plus"
+              style = {{...styles.fab}}     
+              onPress= {() => navigation.navigate("MedicalHistory")}
             />}
           
             {editMode == 0 &&
