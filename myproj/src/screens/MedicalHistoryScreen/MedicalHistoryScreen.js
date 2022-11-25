@@ -1,12 +1,20 @@
 import { View ,Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollView } from 'react-native'
 import React ,{useState, useCallback} from 'react'
 import { Text, TextInput, Button, Title, Paragraph,  SegmentedButtons, FAB, useTheme} from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 const MedicalHistoryScreen = () => {
   const theme = useTheme();
+  const navigation = useNavigation();
+
+
+  const handleSubmit = () => {
+    navigation.navigate("Profile")
+  }
 
     return ( 
         <View style = {{...styles.root}}>
+
           <View style = {{...styles.row, ...styles.custom_card, backgroundColor: theme.colors.primary}}>
               <Title style = {{...styles.centerX, color:"white"}}>Update Medical Record History</Title>
           </View>
@@ -42,7 +50,7 @@ const MedicalHistoryScreen = () => {
               <TextInput numberOfLines={5} multiline style = {{...styles.input}}></TextInput>
             </View>
 
-            <Button mode="contained" style={{...styles.button}}>
+            <Button onPress={handleSubmit} mode="contained" style={{...styles.button}}>
               Submit
             </Button>
           </ScrollView>
@@ -99,5 +107,5 @@ const styles = StyleSheet.create({
       padding:5,
       marginTop: 10,
       marginBottom: 10
-    }
+    },
   })

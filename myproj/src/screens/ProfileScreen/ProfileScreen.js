@@ -1,4 +1,4 @@
-import { View ,Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollView } from 'react-native'
+import { View ,Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollView, KeyboardAvoidingView} from 'react-native'
 import React ,{useState, useCallback} from 'react'
 import { Text, TextInput, Button, Title, Paragraph,  SegmentedButtons, FAB} from 'react-native-paper';
 import profilePic from "../../../assets/profile.png"
@@ -11,8 +11,8 @@ import { useNavigation } from '@react-navigation/native';
 
 const ProfileScreen = () => {
   const navigation = useNavigation()
+  const [hideProfile, setHideProfile] = React.useState(false);
   const [index, setIndex] = React.useState(0);
-  const [editMode, setEditMode] = React.useState(false);
   const window = useWindowDimensions();
   const [routes] = useState([
       { key: 'first', title: 'Profile' },
@@ -20,23 +20,52 @@ const ProfileScreen = () => {
       { key: 'third', title: 'Activity' },
     ]);
 
+  const user = {
+    username: "Shadow11",
+    firstname : "Raahim",
+    lastname : "Siddiqi",
+    email : "raahim.s@hotmail.com",
+    age : "21",
+    dob : "4/4/2001",
+    gender : "Male",
+    city : "Karachi",
+    about : "I am cute.",
+    userrole: "user"
+  };
+
+  const doctor = {
+    username: "Shadow11",
+    firstname : "Syed",
+    lastname : "Abbas",
+    email : "vorix777@gmail.com",
+    age : "69",
+    dob : "27/4/2001",
+    gender : "Female",
+    city : "Lahore",
+    about : "I am very cute.",
+    userrole: "doctor",
+    certificationName: "MBBS",
+    instituteName: "Aga Khan Hopsital"
+  };
+
     const Profile = useCallback(() => {
+      console.log("Re-render");
       return (
-        <ProfileView editMode = {editMode} />
+        <ProfileView profileMode={hideProfile} userDetails={doctor} toggleProfileMode = {toggleProfileMode} />
       );
-    }, [editMode])
+    }, [hideProfile])
     
     const MedicalHistory = useCallback(() => {
       return (
         <MedicalHistoryView />
       );
-    }, [editMode])
+    }, [])
     
     const Activity = useCallback(() => {
       return (
         <ActivityView />
       );
-    }, [editMode])
+    }, [])
     
     const renderScene = SceneMap({
       first:  Profile,
@@ -44,25 +73,13 @@ const ProfileScreen = () => {
       third:  Activity
     });
 
-    function toggleEditMode() {
-      setEditMode(!editMode);
+    function toggleProfileMode() {
+      setHideProfile(!hideProfile);
     }
 
     return (
         <View style={styles.root}>   
-            {index == 0 && <FAB
-              icon = {editMode == 0 ? "pencil" : "pencil-off"}
-              style = {styles.fab}
-              onPress = {toggleEditMode}
-            />}
-
-            {index == 1 && <FAB
-              icon = "plus"
-              style = {{...styles.fab}}     
-              onPress= {() => navigation.navigate("MedicalHistory")}
-            />}
-          
-            {editMode == 0 &&
+            {hideProfile == false &&
             <View style={{backgroundColor:"white", width:'100%', paddingBottom:10}}> 
               {/* <Text style={{paddingLeft:10}} variant="bodySmall">points: 69</Text> */}
               <View style={{...styles.centerX, paddingBottom:10}}>
@@ -76,7 +93,7 @@ const ProfileScreen = () => {
               </View>
             </View>
             }
-
+        
             <View style={{flex:1, width:'100%'}}  >
               <TabView
                 navigationState={{ index, routes }}
@@ -85,7 +102,6 @@ const ProfileScreen = () => {
                 initialLayout={{ width: window.width }}
               />
             </View>
-            
         </View>
      );
 }
@@ -105,20 +121,10 @@ const styles = StyleSheet.create({
       marginVertical:10,
       borderRadius: 5
     },
-    tabs : {
-
-    },
-    fab: {
-      position:'absolute',
-      margin: 16,
-      right: 0,
-      bottom: 0,
-      zIndex:99
-    },
     centerX : {
       marginLeft : 'auto', 
       marginRight : 'auto'
-    }
+    },
   })
 
 export default ProfileScreen;

@@ -1,5 +1,5 @@
 import { View ,Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollView } from 'react-native'
-import { Avatar, Button, Card, Title, Paragraph, useTheme  } from 'react-native-paper';
+import { Avatar, Button, Card, Title, Paragraph, useTheme, FAB  } from 'react-native-paper';
 import React , {useState} from 'react'
 import { useNavigation } from '@react-navigation/native';
 
@@ -10,8 +10,14 @@ const MedicalHistoryView = () => {
     const theme = useTheme();
 
     return (  
-      <ScrollView>
+        <>
+        <FAB
+          icon = "plus"
+          style = {{...styles.fab}}     
+          onPress= {() => navigation.navigate("MedicalHistory")}
+          />
         <View style = {styles.root}>
+          <ScrollView>
           <Card elevation={1} style = {{...styles.card, borderWidth:1, borderColor:"#007fff"}}>
             <Card.Title titleStyle={{fontSize:24, minHeight:'auto'}} title="Diabetes" subtitle="Status: Ongoing" left={LeftContent} />
             <Card.Content>
@@ -44,8 +50,11 @@ const MedicalHistoryView = () => {
               <Button onPress={() => navigation.navigate("MedicalHistory")} mode="text" textColor={theme.colors.primary}>Edit</Button>
             </Card.Actions>
           </Card>
+
+          <View style={{paddingBottom:75}}></View>
+          </ScrollView>
         </View>
-      </ScrollView>
+      </>
     );
 }
  
@@ -56,19 +65,24 @@ const styles = StyleSheet.create({
   root : {
     flex:1,
     paddingTop: 5,
-    paddingBottom: 80,
   },
     centerX : {
       marginLeft : 'auto', 
       marginRight : 'auto'
     },
     button : {
-      width: 20,
       borderRadius: 0
     }, 
     card : {
       marginLeft: 5,
       marginRight: 8,
       marginTop: 10
-    }
+    },
+    fab: {
+      position:'absolute',
+      margin: 16,
+      right: 0,
+      bottom: 0,
+      zIndex:99
+    },
 })

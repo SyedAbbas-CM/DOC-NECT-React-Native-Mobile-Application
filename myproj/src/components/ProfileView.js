@@ -1,102 +1,217 @@
 import React, { useState } from 'react';
-import { View ,Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollView } from 'react-native'
-import { Text, TextInput, Button, Title, Paragraph} from 'react-native-paper';
+import { View ,Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollView, Alert } from 'react-native'
+import { Text, TextInput, Button, Title, Paragraph, FAB} from 'react-native-paper';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 
-const ProfileView = ({editMode}) => {
-    const [firstName, setFirstName] = useState('')
-    const [lastName, setLastName] = useState('')
-    const [email, setEmail] = useState('')
-    const [age, setAge] = useState('')
-    const [dob, setDob] = useState('')
-    const [gender, setGender] = useState('')
-    const [city, setCity] = useState('')
-    const [about, setAbout] = useState('')
+const schema = yup.object({
+    firstname: yup.string()
+        .max(30)
+        .required("Required"),
+    lastname: yup.string()
+        .required("Required"),
+    email: yup.string()
+        .email()
+        .required("Required"),
+    dob: yup.date()
+        .required("Required"),
+    gender: yup.string()
+        .required("Required"),
+    city: yup.string()
+        .required("Required")
+        .max(30, "Max Length Exceeded"),
+    about: yup.string()
+        .max(1000)
+})
+
+const ProfileView = ({toggleProfileMode, userDetails, profileMode}) => {
+    let isAlertActive = 0;
+    const [editMode, setEditMode] = React.useState(profileMode);
+    const formik = useFormik({
+        initialValues: {
+          firstname : userDetails.firstname ? userDetails.firstname : "",
+          lastname : userDetails.lastname ? userDetails.lastname : "",
+          email : userDetails.email ? userDetails.email : "",
+          age : userDetails.age ? userDetails.age : "",
+          dob : userDetails.dob ? userDetails.dob : "",
+          gender : userDetails.gender ? userDetails.gender : "",
+          city : userDetails.city ? userDetails.city : "",
+          about : userDetails.about ? userDetails.about : "",
+        },
+        validationSchema: schema,
+        onSubmit: (values) => {
+            console.log(values);
+            toggleProfileMode();
+        },
+    });
+
+    const showAlert = () => {
+        isAlertActive = 1;
+        Alert.alert(
+            "Confirmation",
+            "Are you sure you want to discard your changes without saving?",
+            [
+              {
+                text: "No",
+                onPress: () => console.log("exit"),
+              },
+              { text: "Yes", onPress: _toggleEditMode }
+            ]       
+    ), isAlertActive = 1;}
+
+    const toggleEditMode = () => {
+        if (formik.dirty && isAlertActive == 0) 
+            showAlert()
+        else 
+            _toggleEditMode();
+    }
+
+    const _toggleEditMode = () => {
+        setEditMode(!editMode);
+        toggleProfileMode();
+    }
 
     return (  
-        <ScrollView>
+        <>
+        <FAB
+        icon = {editMode == 0 ? "pencil" : "pencil-off"}
+        style = {styles.fab}
+        onPress = {toggleEditMode}
+        />
         <View style = {styles.root}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+            
             <View style={{...styles.row, flexDirection:"row", width:'100%'}}>
                 <View style={{width:'50%', paddingRight: 10}}>
                     <TextInput style={{...styles.input}}
+                        onChangeText = {formik.handleChange('firstname')}
+                        value={formik.values.firstname}
                         editable = {editMode == 1 ? true : false}
                         label = "Firstname"
                         mode = "outlined"
                         disabled = {editMode == true ? false : true}
                     ></TextInput>
+                    {formik.errors.firstname && <Text style={{...styles.error}} variant='bodySmall'>{formik.errors.firstname}</Text>}
                 </View>
+
                 <View style={{width:'50%', paddingLeft: 10}}>
                     <TextInput style={{...styles.input}}
+                        onChangeText = {formik.handleChange('lastname')}
+                        value={formik.values.lastname}
                         editable = {editMode == 1 ? true : false}
                         label = "Lastname"
                         mode = "outlined"
                         disabled = {editMode == true ? false : true}
                     ></TextInput>
+                    {formik.errors.lastname && <Text style={{...styles.error}} variant='bodySmall'>{formik.errors.lastname}</Text>}
                 </View>
             </View>
 
             <View style={{...styles.row}}>
                 <TextInput style={{...styles.input}}
+                    onChangeText = {formik.handleChange('email')}
+                    value={formik.values.email}
                     editable = {editMode == 1 ? true : false}
                     label = "Email"
                     mode = "outlined"
                     disabled = {editMode == true ? false : true}
                 ></TextInput>
+                {formik.errors.email && <Text style={{...styles.error}} variant='bodySmall'>{formik.errors.email}</Text>}
             </View>
 
             <View style={{...styles.row, flexDirection:"row", width:'100%'}}>
                 <View style={{width:'42%', marginRight: '8%'}}>
                     <TextInput style={{...styles.input}}
-                        editable = {editMode == 1 ? true : false}
+                        onChangeText = {formik.handleChange('age')}
+                        value={formik.values.age}
+                        editable = {false}
                         label = "Age"
                         mode = "outlined"
-                        disabled = {editMode == true ? false : true}
+                        disabled 
                     ></TextInput>
+                    {formik.errors.age && <Text style={{...styles.error}} variant='bodySmall'>{formik.errors.age}</Text>}
                 </View>
 
                 <View style={{width:'42%', marginLeft: '8%'}}>
                     <TextInput style={{...styles.input}}
+                        onChangeText = {formik.handleChange('gender')}
+                        value={formik.values.gender}
                         editable = {editMode == 1 ? true : false}
                         label = "Gender"
                         mode = "outlined"
                         disabled = {editMode == true ? false : true}
                     ></TextInput>
+                    {formik.errors.gender && <Text style={{...styles.error}} variant='bodySmall'>{formik.errors.gender}</Text>}
                 </View>
             </View>
 
             <View style={{...styles.row, flexDirection:"row", width:'100%'}}>
                 <View style={{width:'42%', marginRight: '8%'}}>
-                        <TextInput style={{...styles.input}}
-                            editable = {editMode == 1 ? true : false}
-                            label="D.O.B"
-                            mode = "outlined"
-                            disabled = {editMode == true ? false : true}
-                        ></TextInput>
+                    <TextInput style={{...styles.input}}
+                        onChangeText = {formik.handleChange('dob')}
+                        value={formik.values.dob}
+                        editable = {editMode == 1 ? true : false}
+                        label="D.O.B"
+                        mode = "outlined"
+                        disabled = {editMode == true ? false : true}
+                    ></TextInput>
+                    {formik.errors.dob && <Text style={{...styles.error}} variant='bodySmall'>{formik.errors.dob}</Text>}
                 </View>
 
                 <View style={{width:'42%', marginLeft: '8%'}}>
                     <TextInput style={{...styles.input}}
+                        onChangeText = {formik.handleChange('city')}
+                        value={formik.values.city}
                         editable = {editMode == 1 ? true : false}
                         label="City"
                         mode="outlined"
                         disabled = {editMode == true ? false : true}
                     ></TextInput>
+                    {formik.errors.city && <Text style={{...styles.error}} variant='bodySmall'>{formik.errors.city}</Text>}
                 </View>
             </View>
+            
+            {userDetails.userrole == "doctor" &&
+            <View style={{...styles.doctorView}}>
+                <Text>Doctor Info</Text>
+                <View style={{...styles.row}}>
+                    <TextInput style={{...styles.input, marginBottom: 10}}
+                        value = {userDetails.certificationName}
+                        label = "Certification"
+                        mode = "outlined"
+                        disabled 
+                    ></TextInput>
 
-            <View style={{...styles.row}}>
+                    <TextInput style={{...styles.input, marginTop: 10, marginBottom: 10}}
+                        value = {userDetails.instituteName}
+                        label = "Institue Name"
+                        mode = "outlined"
+                        disabled 
+                    ></TextInput>
+                </View>
+            </View>
+            }
+
+            <View style={{...styles.row, paddingTop:20}}>
                 <Text variant='bodyLarge' style={{color: editMode? "black" : "grey"}}>About Me</Text>
-                {console.log(editMode)}
                 <TextInput style={{...styles.multiline_input}}
+                    onChangeText = {formik.handleChange('about')}
+                    value={formik.values.about}
                     editable = {editMode == 1 ? true : false}
                     multiline
                     mode = "outlined"
                     numberOfLines={4}
                     disabled = {editMode == true ? false : true}
-                   
                 ></TextInput>
+                {formik.errors.about && <Text style={{...styles.error}} variant='bodySmall'>{formik.errors.about}</Text>}
             </View>
+
+            <Button onPress={formik.handleSubmit} style={{...styles.button}} mode='contained'>Save Changes</Button>
+           
+            <View style={{paddingBottom:75}}></View>
+            </ScrollView>
         </View>
-        </ScrollView>
+        </>
     );
 }
  
@@ -106,14 +221,17 @@ export default React.memo(ProfileView);
 const styles = StyleSheet.create({
     root : {
       flex:1,
-      paddingTop: 10,
-      paddingBottom: 70,
+      paddingTop: 10, 
       paddingRight: 25,
-      paddingLeft: 25
+      paddingLeft: 25,
     },
     centerX : {
       marginLeft : 'auto', 
       marginRight : 'auto'
+    },
+    error : {
+        color: "red",
+        fontStyle:"italic"
     },
     row : {
         paddingTop: 12,
@@ -132,4 +250,25 @@ const styles = StyleSheet.create({
         backgroundColor : "white",
         color : 'gray'
     },
+    fab: {
+        position:'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
+        zIndex:99
+      },
+    button : {
+        marginTop: 10,
+        marginBottom: 20,
+        borderRadius: 0
+    }, 
+    doctorView : {
+        borderTopWidth: 1, 
+        borderTopColor: "grey", 
+        borderBottomWidth: 1, 
+        borderBottomColor: "grey", 
+        marginTop: 20, 
+        marginBottom: 20, 
+        opacity:0.5
+    }
 })
