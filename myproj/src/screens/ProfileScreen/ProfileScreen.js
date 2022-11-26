@@ -1,12 +1,13 @@
 import { View ,Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollView, KeyboardAvoidingView} from 'react-native'
 import React ,{useState, useCallback} from 'react'
-import { Text, TextInput, Button, Title, Paragraph,  SegmentedButtons, FAB} from 'react-native-paper';
+import { Icon, Text, TextInput, Button, Title, Paragraph,  SegmentedButtons, FAB, Avatar} from 'react-native-paper';
 import profilePic from "../../../assets/profile.png"
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import ProfileView from '../../components/ProfileView';
 import ActivityView from '../../components/ActivityView';
 import MedicalHistoryView from '../../components/MedicalHistoryView';
 import { useNavigation } from '@react-navigation/native';
+import points from "../../../assets/points.png"
 
 
 const ProfileScreen = () => {
@@ -27,7 +28,7 @@ const ProfileScreen = () => {
     email : "raahim.s@hotmail.com",
     age : "21",
     dob : "4/4/2001",
-    gender : "Male",
+    gender : "male",
     city : "Karachi",
     about : "I am cute.",
     userrole: "user"
@@ -39,8 +40,8 @@ const ProfileScreen = () => {
     lastname : "Abbas",
     email : "vorix777@gmail.com",
     age : "69",
-    dob : "27/4/2001",
-    gender : "Female",
+    dob : "22 Oct 2001",
+    gender : "female",
     city : "Lahore",
     about : "I am very cute.",
     userrole: "doctor",
@@ -78,10 +79,16 @@ const ProfileScreen = () => {
     }
 
     return (
-        <View style={styles.root}>   
+        <View style={styles.root}>  
+            <View style={styles.fab}>
+              <Image source={points}></Image>
+              <View padding={2} left={6} top={34} position="absolute" backgroundColor="lightblue" borderRadius={8}>
+                <Text style={{...styles.centerX}} variant='bodySmall' color="black">100</Text>
+              </View>
+            </View>
+
             {hideProfile == false &&
             <View style={{backgroundColor:"white", width:'100%', paddingBottom:10}}> 
-              {/* <Text style={{paddingLeft:10}} variant="bodySmall">points: 69</Text> */}
               <View style={{...styles.centerX, paddingBottom:10}}>
                 <Image source={profilePic}>
                 </Image>
@@ -125,6 +132,15 @@ const styles = StyleSheet.create({
       marginLeft : 'auto', 
       marginRight : 'auto'
     },
+    fab: {
+      position: 'absolute',
+      marginBottom: 16,
+      marginLeft: 16,
+      marginRight: 16,
+      left: 0,
+      top: 0,
+      zIndex: 99
+  },
   })
 
 export default ProfileScreen;
