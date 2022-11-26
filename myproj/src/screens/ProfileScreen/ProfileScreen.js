@@ -1,5 +1,5 @@
 import { View ,Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollView, KeyboardAvoidingView} from 'react-native'
-import React ,{useState, useCallback} from 'react'
+import React ,{useState, useCallback, useEffect} from 'react'
 import { Icon, Text, TextInput, Button, Title, Paragraph,  SegmentedButtons, FAB, Avatar} from 'react-native-paper';
 import profilePic from "../../../assets/profile.png"
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
@@ -8,7 +8,7 @@ import ActivityView from '../../components/ActivityView';
 import MedicalHistoryView from '../../components/MedicalHistoryView';
 import { useNavigation } from '@react-navigation/native';
 import points from "../../../assets/points.png"
-
+import axios from 'axios';
 
 const ProfileScreen = () => {
   const navigation = useNavigation()
@@ -49,75 +49,86 @@ const ProfileScreen = () => {
     instituteName: "Aga Khan Hopsital"
   };
 
-    const Profile = useCallback(() => {
-      console.log("Re-render");
-      return (
-        <ProfileView profileMode={hideProfile} userDetails={doctor} toggleProfileMode = {toggleProfileMode} />
-      );
-    }, [hideProfile])
-    
-    const MedicalHistory = useCallback(() => {
-      return (
-        <MedicalHistoryView />
-      );
+    useEffect(() => {
+      axios.get("http://192.168.150.226:8090/user/getProfile") 
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((response) => {
+          console.log(response);
+        })
     }, [])
-    
-    const Activity = useCallback(() => {
-      return (
-        <ActivityView />
-      );
-    }, [])
-    
-    const renderScene = SceneMap({
-      first:  Profile,
-      second: MedicalHistory,
-      third:  Activity
-    });
 
-    function toggleProfileMode() {
-      setHideProfile(!hideProfile);
-    }
-
+  const Profile = useCallback(() => {
+    console.log("Re-render");
     return (
-        <View style={styles.root}>  
-            <View style={styles.fab}>
-              <Image source={points}></Image>
-              <View padding={2} left={6} top={34} position="absolute" backgroundColor="lightblue" borderRadius={8}>
-                <Text style={{...styles.centerX}} variant='bodySmall' color="black">100</Text>
-              </View>
-            </View>
+      <ProfileView profileMode={hideProfile} userDetails={doctor} toggleProfileMode = {toggleProfileMode} />
+    );
+  }, [hideProfile])
+  
+  const MedicalHistory = useCallback(() => {
+    return (
+      <MedicalHistoryView />
+    );
+  }, [])
+  
+  const Activity = useCallback(() => {
+    return (
+      <ActivityView />
+    );
+  }, [])
+  
+  const renderScene = SceneMap({
+    first:  Profile,
+    second: MedicalHistory,
+    third:  Activity
+  });
 
-            {hideProfile == false &&
-            <View style={{backgroundColor:"white", width:'100%', paddingBottom:10}}> 
-              <View style={{...styles.centerX, paddingBottom:10}}>
-                <Image source={profilePic}>
-                </Image>
-              </View>
-             
-              <View style={{...styles.centerX}}>
-                <Text variant="bodyLarge" style={{...styles.centerX}}>Raahim Siddiqi</Text>
-                <Text variant="bodySmall" style={{...styles.centerX}}>User from: 11/22/2001</Text>
-              </View>
+  function toggleProfileMode() {
+    setHideProfile(!hideProfile);
+  }
+
+  return (
+      <View style={styles.root}>  
+          {hideProfile == false &&
+          <View style={styles.fab}>
+            <Image source={points}></Image>
+            <View padding={2} left={6} top={34} position="absolute" backgroundColor="lightblue" borderRadius={8}>
+              <Text style={{...styles.centerX}} variant='bodySmall' color="black">100</Text>
             </View>
-            }
-        
-            <View style={{flex:1, width:'100%'}}  >
-              <TabView
-                navigationState={{ index, routes }}
-                renderScene={renderScene}
-                onIndexChange={setIndex}
-                initialLayout={{ width: window.width }}
-              />
+          </View>}
+
+          {hideProfile == false &&
+          <View style={{backgroundColor:"white", width:'100%', paddingBottom:10}}> 
+            <View style={{...styles.centerX, paddingBottom:10}}>
+              <Image source={profilePic}>
+              </Image>
             </View>
-        </View>
-     );
+            
+            <View style={{...styles.centerX}}>
+              <Text variant="bodyLarge" style={{...styles.centerX}}>Raahim Siddiqi</Text>
+              <Text variant="bodySmall" style={{...styles.centerX}}>User from: 11/22/2001</Text>
+            </View>
+          </View>
+          }
+      
+          <View style={{flex:1, width:'100%'}}  >
+            <TabView
+              navigationState={{ index, routes }}
+              renderScene={renderScene}
+              onIndexChange={setIndex}
+              initialLayout={{ width: window.width }}
+            />
+          </View>
+      </View>
+    );
 }
  
 
 const styles = StyleSheet.create({
     root : {
       flex:1,
-      marginTop:50.
+      marginTop: 7
     },
     input : {
       marginVertical:10, 

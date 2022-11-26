@@ -20,7 +20,7 @@ const Navigation = () => {
   
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{contentStyle : { backgroundColor : "#ffffff" }, headerShown:false}}>        
+      <Stack.Navigator screenOptions={{contentStyle : { backgroundColor : "#ffffff" }}}>        
         {
           Object.keys(screens).map((key, index) => 
                 <Stack.Screen name = {key} key={index} component={screens[key]}/>
