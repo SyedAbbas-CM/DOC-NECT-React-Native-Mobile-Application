@@ -27,7 +27,7 @@ const ProfileScreen = () => {
     lastname : "Siddiqi",
     email : "raahim.s@hotmail.com",
     age : "21",
-    dob : "4/4/2001",
+    dob : "2003-4-7",
     gender : "male",
     city : "Karachi",
     about : "I am cute.",
@@ -40,7 +40,7 @@ const ProfileScreen = () => {
     lastname : "Abbas",
     email : "vorix777@gmail.com",
     age : "69",
-    dob : "22 Oct 2001",
+    dob : "2001-1-1",
     gender : "female",
     city : "Lahore",
     about : "I am very cute.",
@@ -50,9 +50,9 @@ const ProfileScreen = () => {
   };
 
     useEffect(() => {
-      axios.get("http://192.168.150.226:8090/user/getProfile") 
+      axios.get("http://192.168.150.226:8090/User/getUser/Shadow")
         .then((response) => {
-          console.log(response);
+          // console.log(response.data);
         })
         .catch((response) => {
           console.log(response);
@@ -60,7 +60,7 @@ const ProfileScreen = () => {
     }, [])
 
   const Profile = useCallback(() => {
-    console.log("Re-render");
+    console.log("Component re-render");
     return (
       <ProfileView profileMode={hideProfile} userDetails={doctor} toggleProfileMode = {toggleProfileMode} />
     );
@@ -128,7 +128,7 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
     root : {
       flex:1,
-      marginTop: 7
+      marginTop: 6
     },
     input : {
       marginVertical:10, 

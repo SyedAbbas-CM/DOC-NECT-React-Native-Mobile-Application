@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollView, Alert, FlatList } from 'react-native'
 import { Text, TextInput, Button, Title, Paragraph, FAB } from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { FastField, useFormik, Formik, useFormikContext } from 'formik';
 import * as yup from 'yup';
+import { MemoInputComponent } from './utils/MemoInputField';
+import { DatePickerModal } from 'react-native-paper-dates';
 
 const schema = yup.object({
     firstname: yup.string()
@@ -30,6 +32,7 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode }) => {
     let isAlertActive = 0;
     const [editMode, setEditMode] = React.useState(profileMode);
     const [showDropDown, setShowDropDown] = useState(false);
+    const [datePickerOpen, setDatePickerOpen] = React.useState(false);
 
     const [genderList, setGenderList] = useState([
         { label: "Male", value: "male" },
@@ -52,8 +55,20 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode }) => {
         ), isAlertActive = 1;
     }
 
+    const onDismissDatePicker = React.useCallback(() => {
+        setDatePickerOpen(false);
+      }, [setDatePickerOpen]);
+
+    const onConfirmDatePicker = React.useCallback(
+        (params, setFieldValue) => {
+          setDatePickerOpen(false);
+          console.log(params.date.toISOString().split('T')[0])
+          setFieldValue("dob",params.date.toISOString().split('T')[0])
+        },
+        [setDatePickerOpen]
+      );
+
     const toggleEditMode = (dirty) => {
-        console.log(isAlertActive)
         if (dirty && isAlertActive == 0)
             showAlert()
         else
@@ -104,39 +119,24 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode }) => {
                         <ScrollView showsVerticalScrollIndicator={false}>
                             <View style={{ ...styles.row, flexDirection: "row", width: '100%' }}>
                                 <View style={{ width: '50%', paddingRight: 10 }}>
-                                    <TextInput style={{ ...styles.input }}
-                                        onChangeText={handleChange('firstname')}
-                                        value={values.firstname}
-                                        editable={editMode == 1 ? true : false}
-                                        label="firstname"
-                                        mode="outlined"
-                                        disabled={editMode == true ? false : true}
-                                    ></TextInput>
+                                    <MemoInputComponent disabled={editMode} 
+                                                   name ={"firstname"} 
+                                                   label="Firstname"/>
                                     {errors.firstname && <Text style={{ ...styles.error }} variant='bodySmall'>{errors.firstname}</Text>}
                                 </View>
 
                                 <View style={{ width: '50%', paddingLeft: 10 }}>
-                                    <TextInput style={{ ...styles.input }}
-                                        onChangeText={handleChange('lastname')}
-                                        value={values.lastname}
-                                        editable={editMode == 1 ? true : false}
-                                        label="Lastname"
-                                        mode="outlined"
-                                        disabled={editMode == true ? false : true}
-                                    />
+                                    <MemoInputComponent disabled={editMode} 
+                                                   name ={"lastname"} 
+                                                   label="Lastname"/>
                                     {errors.lastname && <Text style={{ ...styles.error }} variant='bodySmall'>{errors.lastname}</Text>}
                                 </View>
                             </View>
 
                             <View style={{ ...styles.row }}>
-                                <TextInput style={{ ...styles.input }}
-                                    onChangeText={handleChange('email')}
-                                    value={values.email}
-                                    editable={editMode == 1 ? true : false}
-                                    label="Email"
-                                    mode="outlined"
-                                    disabled={editMode == true ? false : true}
-                                ></TextInput>
+                                <MemoInputComponent disabled={editMode} 
+                                                   name ={"email"} 
+                                                   label="Email"/>
                                 {errors.email && <Text style={{ ...styles.error }} variant='bodySmall'>{errors.email}</Text>}
                             </View>
 
@@ -173,25 +173,50 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode }) => {
                             <View style={{ ...styles.row, flexDirection: "row", width: '100%' }}>
                                 <View style={{ width: '42%', marginRight: '8%' }}>
                                     <TextInput style={{ ...styles.input }}
-                                        onChangeText={handleChange('dob')}
-                                        value={values.dob}
-                                        editable={editMode == 1 ? true : false}
+                                        // onChangeText={handleChange('dob')}
+                                        onFocus = {() => setDatePickerOpen(true)}
+                                        
+                                        editable={true}
+                                        value = {values.dob}
                                         label="D.O.B"
                                         mode="outlined"
                                         disabled={editMode == true ? false : true}
                                     ></TextInput>
+                                    <DatePickerModal
+                                        locale="en"
+                                        mode="single"
+                                        visible={datePickerOpen}
+                                        date = {new Date()}
+                                        onDismiss={onDismissDatePicker}
+                                        onConfirm={(params) => onConfirmDatePicker(params, setFieldValue)}
+                                        saveLabel={<Text style={{color:"white"}}>Save</Text>}
+                                        // validRange={{
+                                        //   startDate: new Date(2021, 1, 2),  // optional
+                                        //   endDate: new Date(), // optional
+                                        //   disabledDates: [new Date()] // optional
+                                        // }}
+                                        // onChange={} // same props as onConfirm but triggered without confirmed by user
+                                        // saveLabel="Save" // optional
+                                        // saveLabelDisabled={true} // optional, default is false
+                                        // uppercase={false} // optional, default is true
+                                        // label="Select period" // optional
+                                        // startLabel="From" // optional
+                                        // endLabel="To" // optional
+                                        // animationType="slide" // optional, default is slide on ios/android and none on web
+                                        // startYear={2000} // optional, default is 1800
+                                        // endYear={2100} // optional, default is 2200
+                                        // closeIcon="close" // optional, default is "close"
+                                        // editIcon="pencil" // optional, default is "pencil"
+                                        // calendarIcon="calendar" // optional, default is "calendar"
+                                        />
                                     {errors.dob && <Text style={{ ...styles.error }} variant='bodySmall'>{errors.dob}</Text>}
                                 </View>
 
                                 <View style={{ width: '42%', marginLeft: '8%' }}>
-                                    <TextInput style={{ ...styles.input }}
-                                        onChangeText={handleChange('city')}
-                                        value={values.city}
-                                        editable={editMode == 1 ? true : false}
-                                        label="City"
-                                        mode="outlined"
-                                        disabled={editMode == true ? false : true}
-                                    ></TextInput>
+                                    <MemoInputComponent disabled={editMode} 
+                                                        name ={"city"} 
+                                                        label="City"
+                                                        />
                                     {errors.city && <Text style={{ ...styles.error }} variant='bodySmall'>{errors.city}</Text>}
                                 </View>
                             </View>

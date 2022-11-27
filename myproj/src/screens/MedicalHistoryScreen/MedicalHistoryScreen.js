@@ -52,6 +52,7 @@ const MedicalHistoryScreen = ({ route }) => {
         <View style={{ ...styles.row, ...styles.custom_card }}>
           <Text variant='bodyLarge'>Title </Text>
           <TextInput style={{ ...styles.input }}
+            dense
             onChangeText={formik.handleChange('name')}
             value={formik.values.name}
           >
@@ -64,6 +65,7 @@ const MedicalHistoryScreen = ({ route }) => {
             <View style={{ width: '50%', paddingRight: 10 }}>
               <Text>Start Date </Text>
               <TextInput style={{ ...styles.input }}
+                dense
                 onChangeText={formik.handleChange('startDate')}
                 value={formik.values.startDate}
               >
@@ -72,6 +74,7 @@ const MedicalHistoryScreen = ({ route }) => {
             <View style={{ width: '50%', paddingLeft: 10 }}>
               <Text>End Date </Text>
               <TextInput style={{ ...styles.input }}
+                  dense
                   onChangeText={formik.handleChange('endDate')}
                   value={formik.values.endDate}
               >
@@ -83,7 +86,8 @@ const MedicalHistoryScreen = ({ route }) => {
 
         <View style={{ ...styles.row, ...styles.custom_card }}>
           <Text variant="bodyLarge">Symptoms </Text>
-          <TextInput numberOfLines={3} multiline style={{ ...styles.input }}
+          <TextInput numberOfLines={4} multiline style={{ ...styles.input }}
+              dense
               onChangeText={formik.handleChange('symptoms')}
               value={formik.values.symptoms}
           >
@@ -92,7 +96,8 @@ const MedicalHistoryScreen = ({ route }) => {
 
         <View style={{ ...styles.row, ...styles.custom_card }}>
           <Text variant="bodyLarge">Description </Text>
-          <TextInput numberOfLines={5} multiline style={{ ...styles.input }}
+          <TextInput numberOfLines={6} multiline style={{ ...styles.input }}
+              dense
               onChangeText={formik.handleChange('description')}
               value={formik.values.description}
           ></TextInput>
@@ -111,7 +116,7 @@ export default MedicalHistoryScreen;
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    marginTop: 50,
+    marginTop: 5,
     paddingBottom: 15,
     paddingRight: 15,
     paddingLeft: 15,
