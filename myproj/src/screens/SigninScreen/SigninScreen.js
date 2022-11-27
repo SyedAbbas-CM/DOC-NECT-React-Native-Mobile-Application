@@ -1,25 +1,60 @@
 import { StyleSheet, View, Image, useWindowDimensions } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import React, {useState} from 'react'
-
 import { Text, TextInput, Button } from 'react-native-paper';
 import { WrapWithKeyboardDismiss } from '../../global';
 import heartBeat from '../../../assets/logo.png';
+import axios from "axios"
 
 
 const SigninScreen = () => {
 
   const { height } = useWindowDimensions();
   const navigation = useNavigation();
-  const [username,setusername] = useState('');
-  const [password,setpassword] = useState('');
+
+
+  const [form, setform] = useState({
+    email : "",
+    password : "",
+  });
+
+
+  const updateForm = (field, value) => {
+    const newForm = {...form};
+    newForm[field] = value;
+    setform(newForm);
+  }
 
   const onSignIn = () => {
-    navigation.navigate('HomeScreen');
+   // console.warn('Signing in');
+    axios.post("http://192.168.1.38:8090/api/signin",{
+      email:form.email,
+      pass:form.password
+    }).then((response)=>{
+      //console.log(response);
+      if(response.status === 200)
+      navigation.navigate('HomeScreen');
+      else{
+        console.warn("Invalid Email / password"+response.status)
+      }  
+    }
+
+      ).catch(function (error){
+      if (error.response) {
+        
+      //console.log(error.response.data);
+       //console.log("Error: "+error.response.status);
+      //console.log(error.response.headers);
+
+      }else if (error.request) {
+      //console.log("No Response: "+error.request);
+      }else {
+        //console.log('Error sending request!', error.message);
+      }
+});
   }
 
   const onForgetPassword = () => {
-  
   }
 
   return (
@@ -40,8 +75,8 @@ const SigninScreen = () => {
         <TextInput     
           left= {<TextInput.Icon icon="email"/>} 
           label="Email"
-          value={username}
-          onChangeText={text => setusername(text)}
+          value={form.email}
+          onChangeText={text => updateForm("email", text)}
           style = {styles.input}
           mode = "outlined"
           outlineColor="#c4c4c4"
@@ -51,8 +86,8 @@ const SigninScreen = () => {
         <TextInput      
           left = {<TextInput.Icon icon="lock"/>}
           label="Password"
-          value={password}
-          onChangeText={text => setpassword(text)}
+          value={form.password}
+          onChangeText={text => updateForm("password", text)}
           style = {styles.input}        
           mode = "outlined"
           outlineColor="#c4c4c4"
