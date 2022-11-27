@@ -11,7 +11,6 @@ CREATE TABLE User(
     city	  VARCHAR(255),
     gender    enum('MALE', 'FEMALE', 'OTHER'),
     about     TEXT,
-    joinDate date default ( curdate() ),
     primary key (userName)
 );
 
