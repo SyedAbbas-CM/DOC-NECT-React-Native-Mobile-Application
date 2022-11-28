@@ -17,7 +17,6 @@ const RegisterUser = ({ results }) => {
         confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required("Required")
     });
     const labels = ["Username", "First name", "Last name", "Email", "Date of birth", "Password", "Confirm Password"];
-    console.log("Seeeee");
     return (
         <ScrollView>
             <Formik
@@ -35,7 +34,7 @@ const RegisterUser = ({ results }) => {
                 validationSchema={schema}
                 onSubmit={(values) => results(values)}
                 >
-                {({ handleChange, handleBlur, handleSubmit, values, errors}) => (
+                {({ handleChange, handleSubmit, values, errors}) => (
                     <View style={globalStyles.root}>
                         {
                             Object.keys(values).map( (key, i) => 
@@ -57,6 +56,20 @@ const RegisterUser = ({ results }) => {
                                     </HelperText>
                                 </View> )
                         }
+
+                        <Text 
+                            variant='bodyMedium'
+                            style={{textAlign : "center"}}
+                        >
+                            By registering, you agree to
+                            <Text 
+                                style={{textDecorationLine : "underline", fontWeight : "bold"}}
+                                onPress ={() => console.log("Hellooo")}
+                            > 
+                                &nbsp;Docnet's terms and conditions.
+                            </Text>
+                        </Text>
+
                         <Button
                             mode="contained"
                             onPress={handleSubmit}
