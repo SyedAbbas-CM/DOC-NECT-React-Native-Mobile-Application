@@ -174,8 +174,7 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode }) => {
                                 <View style={{ width: '42%', marginRight: '8%' }}>
                                     <TextInput style={{ ...styles.input }}
                                         // onChangeText={handleChange('dob')}
-                                        onFocus = {() => setDatePickerOpen(true)}
-                                        
+                                        onFocus = {() => setDatePickerOpen(true)}                                        
                                         editable={true}
                                         value = {values.dob}
                                         label="D.O.B"
