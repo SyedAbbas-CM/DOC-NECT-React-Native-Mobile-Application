@@ -11,26 +11,45 @@ const Register = () => {
   const navigation = useNavigation();
   const [choice, setchoice] = useState(null);
   const [showCertifForm, setshowCertifForm] = useState(false);
+
   const onRegisterUser = (formData) => {
-    /* Post it? */
-    // axios.post().then(
-      if(choice === "doctor") setshowCertifForm(true);
-      else 
-        navigation.navigate('HomeScreen');
-    // )
+    axios.post(
+        "http://192.168.1.38:8090/api/register",
+        {
+          uname:formData.userName,   
+          fname:formData.firstName,
+          role:"user",
+          lname:formData.lastName,
+          email:formData.email,
+          dob:formData.dob,
+          pass:formData.password
+        })
+        .then( response => {
+          if(response.status === 200){
+            /*To do: Store the api key */
+            if(choice === "doctor") setshowCertifForm(true);
+            else{
+              navigation.navigate("HomeScreen");
+            }
+          }
+        })
+        .catch( error => console.warn(error));        
+
   }
   const onSubmitCertificationForm = (formData) => {
     // axios.post().then(
-      navigation.navigate('HomeScreen');
+      // if( successful)
+    //   navigation.navigate("HomeScreen");
     // )
+    // console.log(formData);
   }
   return (
-    choice === null ?
-      <RegisterSelect onSelect = {(ch)=> setchoice(ch)}/>
-                    :
-      !showCertifForm ? 
-        <RegisterUser results={onRegisterUser}/>
-                      :
+    // choice === null ?
+      // <RegisterSelect onSelect = {(ch)=> setchoice(ch)}/>
+      //               :
+      // !showCertifForm ? 
+      //   <RegisterUser results={onRegisterUser}/>
+      //                 :
         <CertificationForm results={onSubmitCertificationForm}/>
   );
 };

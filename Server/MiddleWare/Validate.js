@@ -13,11 +13,17 @@ module.exports = (schema, parameters) => [
     checkSchema(getObjFromKeyList(schema, parameters)),
 
     (request, response, next) => {
-        const errors = validationResult(request);
-        if(errors.isEmpty())
+        const errors = validationResult(request.body);
+        if(errors.isEmpty()){
+        //next function is not a return function ; the stuff after it will run
+            console.log("Validated request with params:")
+            //console.log(request.body)
             next();
-        else
+        }
+        else{
+        console.log("validation has failed"+errors);
             response.status(400).json({
+
                 status : "failure",
                 errors : errors.array().map(item => {
                     return {
@@ -28,5 +34,7 @@ module.exports = (schema, parameters) => [
                     }
                  })
             })
+            next();
+    }
     }
 ];

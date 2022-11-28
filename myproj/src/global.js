@@ -6,7 +6,6 @@ export const globalStyles = StyleSheet.create({
         padding : 20,
     },
     input : {
-        // marginVertical:10, 
         backgroundColor : "white"
     },
     button : {

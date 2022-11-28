@@ -1,10 +1,16 @@
 const User = require("../Model/user.model");
 const asyncWrapper = require('../middleware/async')
-const jwt = require("jsonwebtoken");
 
 const Register = asyncWrapper(async (req, res,next) => {
-    console.log(req.body);
-    User.getUserByUserName.service({ userName : req.body.userName}, (dbError, data1) => {
+    // console.log(req.body.uname)
+    // console.log(req.body.fname)
+    // console.log(req.body.lname)
+    // console.log(req.body.email)
+    // console.log(req.body.dob)
+    // console.log(req.body.pass)
+    User.getUserByUserName.service({ userName : req.body.uname}, (dbError, data1) => {
+
+        
           if(dbError){
             console.log(">>>Database is down<<<")
              res.status(400).json({
@@ -95,9 +101,8 @@ const  SearchByEmail = (req, res) => {
                 });
         });
     }
-const  signIn = asyncWrapper(async(req, res, next) => {
-    console.log(req.body);
-    User.getUserByUserName.service({ userName : req.body.userName}, (dbError, data) => {
+const  signIn = asyncWrapper(async(req, res,next) => {
+    User.getUserByEmail.service({ email : req.body.email}, (dbError, data) => {
           if(dbError){
             res.status(400).json({
                    status : "failure",
@@ -106,24 +111,22 @@ const  signIn = asyncWrapper(async(req, res, next) => {
             });
          }
          else{
-            if(data.length == 0){ /* username doesnt exists */
-                console.log("User does not exist")
+            if(data.length == 0){ /* email doesnt exists */
+                console.log("Email does not exist")
+                //console.log(req.body.email)
+                //console.log(data)
                 res.status(400).json({
                     status : "failure",
                     errorCode : "auth/invalid-email-password"
                 });
               }
             else{  
+                console.log(req.body.email)
+               // console.log(data)
+                console.log(`Email does Exist!`)
+                //console.log(data[0].pass)
                 if(req.body.pass == data[0].pass){
-                    const accessToken = jwt.sign(
-                        { userName : req.body.userName, userRole : req.body.userRole }, 
-                        process.env.ACCESS_TOKEN_SECRET, 
-                        {expiresIn : '1m'}
-                    );
-                    res.status(200).json({
-                        status : "success",
-                        accessToken : accessToken,
-                    });   
+                    res.status(200).json({});
                 }
                 else{
                     res.status(400).json({
@@ -136,21 +139,11 @@ const  signIn = asyncWrapper(async(req, res, next) => {
      });
 
 })
-
-const UpdateProfile = (req, res) => {
-    User.updateProfile.service({...req.body, userName : req.user.userName}, (dbError, data) => {
-        if(dbError){
-            return res.status(400);
-        }
-        res.status(200).json(data);   
-    });
-}
 module.exports = {
         Register,
         signIn,
         SearchByEmail,
-        SearchByName,
-        UpdateProfile
+        SearchByName
 }
 
 

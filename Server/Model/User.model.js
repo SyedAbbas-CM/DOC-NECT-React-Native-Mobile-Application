@@ -68,30 +68,75 @@ User.schema = {
     
 User.createUser = new function(){
     this.params = ["userName", "pass", "userRole", "firstName", "lastName", "email", "dob"];
+    
     this.service = (data, results) => {
-        const sql = 'INSERT INTO User(userName, pass, userRole, firstName, lastName, email, dob) values(?, ?, ?, ?, ?, ?, str_to_date(?, \'%Y/%m/%d\'))';
-        db.query(sql, this.params.map( key => data[key]), (err, data) => {
+        console.log('Creating user')
+        console.log(data)
+        //placeholder ? are injection proof
+        const sql = 'INSERT INTO User(userName, pass, userRole, firstName, lastName, email) values(?, ?, ?, ?, ?, ?)';
+        db.query(sql, [data.userName,data.pass,data.userRole,data.firstName,data.lastName,data.email], (err, data) => {
+            if(err){
+                console.log(err)
+            }else{
+                console.log("Successfully Registered user!")
+            }
             results(!err? null : err, data);
         });
     };
 };
 
 User.getUserByUserName = new function(){
+
     this.params = ["userName"];
     this.service = (data, results) => {
-        const sql = 'SELECT * FROM User WHERE userName = ?';
-        db.query(sql, data.userName, (err, data) => {
+        console.log(data)
+        const sql = `SELECT * FROM User WHERE userName = ?`;
+        db.query(sql, [data.userName], (err, data) => {
+            if(err){
+                console.log(err)
+            }
+            else{
+
+            }
+            
             results(!err? null : err, data);
         });
     };
 };
 
 User.getUserByEmail = new function(){
+
     this.params = ["email"];
     this.service = (data, results) => {
-        const sql = 'SELECT * FROM User WHERE email = ?';
-        db.query(sql, data.email, (err, data) => {
+        //console.log(data)
+        const sql = `SELECT * FROM User WHERE email = ?`;
+        db.query(sql, [data.email], (err, data) => {
+            if(err){
+                console.log(err)
+            }else{
+
+            }
+            
+            
             results(!err? null : err, data);
+           
+        });
+    };
+};
+
+User.getPasswordbyEmail = new function(){
+
+    this.params = ["email"];
+    this.service = (data, results) => {
+        const sql = `SELECT pass FROM User WHERE email = ?`;
+        db.query(sql, [data.email], (err, data) => {
+            if(err){
+                console.log(err)
+            }else{
+
+            }
+            results(!err? null : err, data);
+           
         });
     };
 };
@@ -99,4 +144,16 @@ User.getUserByEmail = new function(){
 User.signIn = new function(){
     this.params = ["userName", "pass"];
 };
+
+User.updateProfile = new function(){
+    this.params = ["firstName", "lastName", "email", "dob", "city", "gender", "about"];
+    this.service = (data, results) => {
+        const { userName, ...restData } = data;
+        let sql = "UPDATE User SET " + Object.keys(restData).join(" = ? ,") +" = ? WHERE userName = ?";
+        db.query(sql, [...Object.values(restData), userName], (err, data) => {
+            results(!err ? null : err, data);
+        });
+    }
+};
+
 module.exports = User;
