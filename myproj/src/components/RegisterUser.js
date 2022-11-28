@@ -4,9 +4,10 @@ import { View, ScrollView } from 'react-native'
 import React from 'react'
 import { Text, TextInput, Button, HelperText, Checkbox } from 'react-native-paper';
 import { globalStyles } from '../global';
-
+import { DatePickerModal } from 'react-native-paper-dates';
 const RegisterUser = ({ results }) => {
     const [agree, setagree] = React.useState(false);
+    const [dateOpen, setdateOpen] = React.useState(false);
     const schema = yup.object({
         userName: yup.string().min(3, "The minimum length is 3.").required("Required"),
         firstName: yup.string().min(3, "The minimum length is 3.").required("Required"),
@@ -17,6 +18,12 @@ const RegisterUser = ({ results }) => {
         confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required("Required")
     });
     const labels = ["Username", "First name", "Last name", "Email", "Date of birth", "Password", "Confirm Password"];
+
+    const onConfirmDatePicker = (params, setFieldValue) => {
+        setFieldValue("dob", params.date.toISOString().split('T')[0]);
+        setdateOpen(false);
+    }
+
     return (
         <ScrollView>
             <Formik
@@ -32,9 +39,12 @@ const RegisterUser = ({ results }) => {
                     confirmPassword: "",
                 }}
                 validationSchema={schema}
-                onSubmit={(values) => results(values)}
+                onSubmit={(values) => {
+                    const { confirmPassword, ...rest } = values;
+                    results(rest);
+                }}
             >
-                {({ handleChange, handleSubmit, values, errors }) => (
+                {({ handleChange, handleSubmit, values, errors, setFieldValue }) => (
                     <View style={globalStyles.root}>
                         {
                             Object.keys(values).map((key, i) =>
@@ -47,7 +57,8 @@ const RegisterUser = ({ results }) => {
                                         mode="outlined"
                                         outlineColor="#c4c4c4"
                                         activeOutlineColor="#3796f3"
-                                        secureTextEntry={key === "password" || key === "passwordConfirm"}
+                                        onFocus={key === "dob" ? () => setdateOpen(true) : undefined}
+                                        secureTextEntry={key === "password" || key === "confirmPassword"}
                                     />
                                     <HelperText
                                         type="error"
@@ -56,22 +67,22 @@ const RegisterUser = ({ results }) => {
                                     </HelperText>
                                 </View>)
                         }
-                        <View style ={{display : "flex", flexDirection : "row", alignItems : "center"}}>
+                        <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                             <Checkbox
                                 status={agree ? 'checked' : 'unchecked'}
                                 onPress={() => {
                                     setagree(!agree);
                                 }}
-                            />                            
-                            <Text 
+                            />
+                            <Text
                                 variant='bodyMedium'
-                                style={{textAlign : "center"}}
+                                style={{ textAlign: "center" }}
                             >
                                 I agree to
-                                <Text 
-                                    style={{color :"#3796f3", textDecorationLine : "underline", fontWeight : "bold"}}
-                                    onPress ={() => console.log("Hello World from src/components/RegisterUser.js Line 73")}
-                                > 
+                                <Text
+                                    style={{ color: "#3796f3", textDecorationLine: "underline", fontWeight: "bold" }}
+                                    onPress={() => console.log("Hello World from src/components/RegisterUser.js Line 73")}
+                                >
                                     &nbsp;Docnet's terms and conditions.
                                 </Text>
                             </Text>
@@ -85,6 +96,16 @@ const RegisterUser = ({ results }) => {
                             buttonColor="#3796f3">
                             Register
                         </Button>
+
+                        <DatePickerModal
+                            locale="en"
+                            mode="single"
+                            visible={dateOpen}
+                            date={new Date()}
+                            onDismiss={() => setdateOpen(false)}
+                            onConfirm={(params) => onConfirmDatePicker(params, setFieldValue)}
+                            saveLabel={<Text style={{ color: "white" }}>Save</Text>}
+                        />
                     </View>
                 )}
             </Formik>
