@@ -137,7 +137,7 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
                     console.log(values);
                     Keyboard.dismiss();
                     _toggleEditMode();
-                    updateUserDetails(values);
+                    updateUserDetails(...values);
                 }}>
                 {({
                     values,
