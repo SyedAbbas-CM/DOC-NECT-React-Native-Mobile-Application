@@ -74,7 +74,7 @@ User.createUser = new function(){
         console.log(data)
         //placeholder ? are injection proof
         const sql = 'INSERT INTO User(userName, pass, userRole, firstName, lastName, email) values(?, ?, ?, ?, ?, ?)';
-        db.query(sql, [data.uname,data.pass,data.role,data.fname,data.lname,data.email], (err, data) => {
+        db.query(sql, [data.userName,data.pass,data.userRole,data.firstName,data.lastName,data.email], (err, data) => {
             if(err){
                 console.log(err)
             }else{
@@ -91,7 +91,7 @@ User.getUserByUserName = new function(){
     this.service = (data, results) => {
         console.log(data)
         const sql = `SELECT * FROM User WHERE userName = ?`;
-        db.query(sql, [data.uname], (err, data) => {
+        db.query(sql, [data.userName], (err, data) => {
             if(err){
                 console.log(err)
             }
@@ -128,7 +128,6 @@ User.getPasswordbyEmail = new function(){
 
     this.params = ["email"];
     this.service = (data, results) => {
-        //console.log(data)
         const sql = `SELECT pass FROM User WHERE email = ?`;
         db.query(sql, [data.email], (err, data) => {
             if(err){
@@ -136,17 +135,25 @@ User.getPasswordbyEmail = new function(){
             }else{
 
             }
-            
-            
             results(!err? null : err, data);
            
         });
     };
 };
 
-
-
 User.signIn = new function(){
     this.params = ["userName", "pass"];
 };
+
+User.updateProfile = new function(){
+    this.params = ["firstName", "lastName", "email", "dob", "city", "gender", "about"];
+    this.service = (data, results) => {
+        const { userName, ...restData } = data;
+        let sql = "UPDATE User SET " + Object.keys(restData).join(" = ? ,") +" = ? WHERE userName = ?";
+        db.query(sql, [...Object.values(restData), userName], (err, data) => {
+            results(!err ? null : err, data);
+        });
+    }
+};
+
 module.exports = User;

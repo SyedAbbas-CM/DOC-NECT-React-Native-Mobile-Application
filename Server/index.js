@@ -1,3 +1,4 @@
+require("dotenv").config() /*Loads the environment variables from the .env file. They are stored in process.env object */
 const express = require('express');
 const User = require('./Routes/User');
 const notFound = require('./middleware/not-found');
