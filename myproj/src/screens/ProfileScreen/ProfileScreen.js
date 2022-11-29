@@ -12,7 +12,7 @@ import axios from 'axios';
 import authContext from '../../context';
 import { SERVER_IP, SERVER_PORT } from '../../../config';
 
-const ProfileScreen = () => {
+const ProfileScreen = ({userDetails}) => {
   const navigation = useNavigation()
   const { auth } = useContext(authContext);
   const [hideProfile, setHideProfile] = React.useState(false);
@@ -29,7 +29,15 @@ const ProfileScreen = () => {
   const [activty, setActivity] = useState(null);
 
     useEffect(() => {
-      axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getUser`)
+      let url = `http://${SERVER_IP}:${SERVER_PORT}/api/getUser/`;
+      if (userDetails) {
+        url = url + userDetails.userName;
+      }
+      else {
+        url = url + auth.userName;
+      }
+
+      axios.get(url)
         .then((response) => {
           let temp = response.data.data[0];
           temp["dob"] = temp["dob"].split("T")[0]
