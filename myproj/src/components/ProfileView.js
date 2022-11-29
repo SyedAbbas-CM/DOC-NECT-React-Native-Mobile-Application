@@ -124,13 +124,13 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
                 validateOnChange={false}
                 validateOnBlur={false}
                 initialValues={{
-                    firstName: userDetails ? userDetails.firstName ? userDetails.firstName : "" : "",
-                    lastName: userDetails ? userDetails.lastName ? userDetails.lastName : "": "",
-                    email: userDetails ? userDetails.email ? userDetails.email : "": "",
-                    dob: userDetails ? userDetails.dob ? userDetails.dob : "": "",
-                    gender: userDetails ? userDetails.gender ? userDetails.gender : "": "",
-                    city: userDetails ? userDetails.city ? userDetails.city : "": "",
-                    about: userDetails ? userDetails.about ? userDetails.about : "": "",
+                    firstName: userDetails.firstName ? userDetails.firstName  : "",
+                    lastName: userDetails.lastName ? userDetails.lastName: "",
+                    email: userDetails.email ? userDetails.email: "",
+                    dob: userDetails.dob ? userDetails.dob: "",
+                    gender: userDetails.gender ? userDetails.gender: "",
+                    city: userDetails.city ? userDetails.city: "",
+                    about: userDetails.about ? userDetails.about: "",
                 }}
                 validationSchema={schema}
                 onSubmit={(values) => {

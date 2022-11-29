@@ -140,4 +140,43 @@ User.updateProfile = new function(){
         });
     }
 };
+
+User.getHistoryByUserName = new function(){
+    this.params = ["userName"];
+    this.service = (data, results) => {
+        console.log("history", data)
+        const sql = `SELECT * FROM History WHERE userName = ?`;
+        db.query(sql, [data.userName], (err, data) => {
+            if(err){
+                console.log(err)
+            }
+            else{
+
+            }
+            
+            results(!err? null : err, data);
+        });
+    };
+};
+
+
+User.getActivityByUserName = new function(){
+    this.params = ["userName"];
+    this.service = (data, results) => {
+        console.log("history", data)
+        const sql = `SELECT * FROM POST WHERE userName = ?`;
+        db.query(sql, [data.userName], (err, data) => {
+            if(err){
+                console.log(err)
+            }
+            else{
+
+            }
+            
+            results(!err? null : err, data);
+        });
+    };
+};
+
+
 module.exports = User;
