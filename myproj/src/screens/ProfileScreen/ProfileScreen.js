@@ -27,14 +27,9 @@ const ProfileScreen = () => {
   const [user, setUser] = useState(null);
   const [history, setHistory] = useState(null);
   const [activty, setActivity] = useState(null);
-  console.log("context" + "Bearer " + String(auth.accessToken))
 
     useEffect(() => {
-      axios.get(`http://${SERVER_IP}:${SERVER_PORT}/User/getUser/Shadow`, {
-        headers: {
-          Authorization: "Bearer " + String(auth.accessToken)
-       }
-      })
+      axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getUser`)
         .then((response) => {
           let temp = response.data.data[0];
           temp["dob"] = temp["dob"].split("T")[0]
@@ -79,13 +74,29 @@ const ProfileScreen = () => {
 
   function updateUserDetails(newUserDetails) {
     setUser({...user, ...newUserDetails});
+    console.log(`BEARER ${auth.accessToken}`)
+    console.log(newUserDetails["about"], newUserDetails.about);
 
-    axios.post("http://192.168.150.226:8090/User/updateProfile", newUserDetails)
+    axios.post(`http://${SERVER_IP}:${SERVER_PORT}/api/updateProfile`, 
+      {
+        about: newUserDetails.about,
+        city: newUserDetails.city,
+        dob: newUserDetails.dob,
+        email: newUserDetails.email,
+        firstName: newUserDetails.firstName,
+        gender: newUserDetails.gender,
+        lastName: newUserDetails.lastname
+      },
+      {
+        headers: {
+          "Authorization": `BEARER ${auth.accessToken}`
+        }
+      })
       .then((response) => {
         console.log(response);
       })
-      .catch((response) => {
-        console.log(response);
+      .catch((error) => {
+        console.log(error);
       })
   }
 

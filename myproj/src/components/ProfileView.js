@@ -134,10 +134,9 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
                 }}
                 validationSchema={schema}
                 onSubmit={(values) => {
-                    console.log(values);
                     Keyboard.dismiss();
                     _toggleEditMode();
-                    updateUserDetails(...values);
+                    updateUserDetails(values);
                 }}>
                 {({
                     values,

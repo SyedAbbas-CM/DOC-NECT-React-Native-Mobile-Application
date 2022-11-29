@@ -1,6 +1,7 @@
 mysql-data/
 Server/node_modules/
 
+myproj/config.js
 myproj/node_modules/
 myproj/.expo/
 myproj/dist/

@@ -10,9 +10,7 @@ import { SERVER_IP, SERVER_PORT } from '../../../config';
 import authContext from '../../context';
 
 const SigninScreen = () => {
-  const ThemeContext = React.createContext('light');
   const { setAuth } = useContext(authContext);
-
   const { height } = useWindowDimensions();
   const navigation = useNavigation();
 
@@ -25,7 +23,7 @@ const SigninScreen = () => {
       }, 
       {timeout : 5000})
       .then((response) => {
-        const authObject = {accessToken : response.data.accessToken};
+        const authObject = {...response.data.data[0], accessToken : response.data.accessToken};
         setAuth(authObject);
         navigation.navigate("HomeScreen");
       })
