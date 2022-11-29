@@ -39,21 +39,22 @@ Certification.schema = {
 };
 
 Certification.certify = new function(){
-    this.params = ["docUserName", "instituteName", "degreeTitle", "startDate", "endDate"];
+    this.params = ["instituteName", "degreeTitle", "startDate", "endDate"];
     this.service = (data, results) => {
+        console.log(data);
         let sql = "UPDATE User SET userRole='DOCTOR' WHERE userName = ?; \
-                   INSERT INTO Certification values(?, ?, ?, str_to_date(?, \'%Y-%m-%d\'), str_to_date(?, \'%Y-%m-%d\')); \
-                   INSERT INTO Doctor values(?)";
+                   INSERT INTO Doctor(userName) values(?); \
+                   INSERT INTO Certification values(?, ?, ?, str_to_date(?, \'%Y-%m-%d\'), str_to_date(?, \'%Y-%m-%d\'));";
         db.query(sql, 
                 [data.docUserName,
+                data.docUserName,
                 data.docUserName,
                 data.instituteName,
                 data.degreeTitle,
                 data.startDate,
-                data.endDate,
-                data.docUserName],
-                (err, data) => {
-                    results(!err? null : err, data);
-                })
+                data.endDate],
+                (err, data) => results(!err? null : err, data));
     }
 }
+
+module.exports = Certification;

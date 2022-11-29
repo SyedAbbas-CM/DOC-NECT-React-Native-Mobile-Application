@@ -13,7 +13,7 @@ const Stack = createNativeStackNavigator();
 
 const Navigation = () => {
   const screens = {
-    Signin : SigninScreen,
+    SignIn : SigninScreen,
     Registration : Register,
     HomeScreen : HomeScreen,
     Profile : ProfileScreen,

@@ -17,7 +17,7 @@ module.exports = (schema, parameters) => [
         if(errors.isEmpty()){
         //next function is not a return function ; the stuff after it will run
             console.log("Validated request with params:")
-            //console.log(request.body)
+            console.log(request.body)
             next();
         }
         else{

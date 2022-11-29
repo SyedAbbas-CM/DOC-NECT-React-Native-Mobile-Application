@@ -1,4 +1,5 @@
 const User = require("../Model/user.model");
+const Certification = require("../Model/Certification.model");
 const asyncWrapper = require('../middleware/async')
 const jwt = require("jsonwebtoken");
 
@@ -162,6 +163,21 @@ const  SearchActivityByName = asyncWrapper(async(req, res) => {
     });
 })
 
+const   CertifyUser = asyncWrapper(async(req, res) => {
+    Certification.certify.service({docUserName : req.user.userName, ...req.body}, (dbError, data) => {
+        if(dbError){
+            console.log(dbError);
+            res.status(400).json({
+                errorCode : "db/unknown-error",
+            });
+        }
+        else
+            res.sendStatus(200);
+    });
+});
+
+
+
 module.exports = {
         Register,
         signIn,
@@ -169,7 +185,8 @@ module.exports = {
         SearchByName,
         UpdateProfile,
         SearchHistoryByName,
-        SearchActivityByName
+        SearchActivityByName,
+        CertifyUser
 }
 
 

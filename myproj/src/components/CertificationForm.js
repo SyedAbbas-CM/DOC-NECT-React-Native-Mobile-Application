@@ -4,14 +4,20 @@ import * as yup from 'yup';
 import { Formik } from 'formik';
 import { globalStyles } from "../global";
 import documentIcon from '../../assets/documents2.png';
-
+import React from "react";
+import { DatePickerModal } from "react-native-paper-dates";
 export const CertificationForm = ({ results }) => {
+    const [dateOpen, setdateOpen] = React.useState("");
     const schema = yup.object({
         instituteName: yup.string().min(3, "The minimum length is 3.").required("Required"),
         degreeTitle: yup.string().required("Required"),
         startDate: yup.string().required("Required"),
         endDate: yup.string().required("Required"),
     });
+    const onConfirmDatePicker = (params, setFieldValue) => {
+        setFieldValue(dateOpen, params.date.toISOString().split('T')[0]);
+        setdateOpen("");
+    };
     const labels = ["Institute name", "Degree title", "Start date", "End date"];
     return (
         <ScrollView>
@@ -29,7 +35,7 @@ export const CertificationForm = ({ results }) => {
                 validationSchema={schema}
                 onSubmit={(values) => results(values)}
             >
-                {({ handleChange, handleSubmit, values, errors }) => (
+                {({ handleChange, handleSubmit, values, errors, setFieldValue }) => (
                     <View style={globalStyles.root}>
                         {
                             Object.keys(values).map((key, i) =>
@@ -42,6 +48,7 @@ export const CertificationForm = ({ results }) => {
                                         mode="outlined"
                                         outlineColor="#c4c4c4"
                                         activeOutlineColor="#3796f3"
+                                        onFocus={key === "startDate" || key === "endDate" ? () => setdateOpen(key) : undefined}
                                     />
                                     <HelperText
                                         type="error"
@@ -57,6 +64,15 @@ export const CertificationForm = ({ results }) => {
                             buttonColor="#3796f3">
                             Submit
                         </Button>
+                        <DatePickerModal
+                            locale="en"
+                            mode="single"
+                            visible={dateOpen !== ""}
+                            date={new Date()}
+                            onDismiss={() => setdateOpen("")}
+                            onConfirm={(params) => onConfirmDatePicker(params, setFieldValue)}
+                            saveLabel={<Text style={{ color: "white" }}>Save</Text>}
+                        />
                     </View>
                 )}
             </Formik>
