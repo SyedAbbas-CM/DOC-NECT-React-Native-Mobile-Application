@@ -1,7 +1,7 @@
 use db;
 
 CREATE TABLE User(
-    userName  VARCHAR(255) NOT NULL UNIQUE,
+    userName  VARCHAR(255),
     pass      VARCHAR(255) NOT NULL,
 	userRole  enum('USER', 'DOCTOR') NOT NULL,
     firstName VARCHAR(255),
@@ -11,24 +11,24 @@ CREATE TABLE User(
     city	  VARCHAR(255),
     gender    enum('MALE', 'FEMALE', 'OTHER'),
     about     TEXT,
+    joinDate  DATE DEFAULT ( CURRENT_DATE ),
     primary key (userName)
 );
 
 CREATE TABLE Doctor(
-	docUserName  INTEGER,
+	userName  VARCHAR(255),
     docPoints INTEGER default 0,
     FOREIGN KEY(userName) REFERENCES User(userName)
 );
 
 CREATE TABLE Certification(
-    docUserName    INTEGER,
+    docUserName    VARCHAR(255),
     instituteName  VARCHAR(255),
 	degreeTitle    VARCHAR(255),
     startDate 	   DATE,
     endDate 	   DATE,
-    approvalStatus bool,
     PRIMARY KEY(docUserName),
-    FOREIGN KEY(docUserName) REFERENCES Doctor(docUserName)
+    FOREIGN KEY(docUserName) REFERENCES Doctor(userName)
 );
 
 CREATE TABLE History(
@@ -45,7 +45,7 @@ CREATE TABLE History(
 
 CREATE TABLE Post(
 	postId 		 INTEGER AUTO_INCREMENT,
-    userName     INTEGER,
+    userName     VARCHAR(255),
     title  		 VARCHAR(255) NOT NULL,
     body 		 TEXT,
     creationTime timestamp default ( current_timestamp() ),
@@ -57,7 +57,7 @@ CREATE TABLE Comment(
 	commentId    	INTEGER AUTO_INCREMENT,
     parentCommentId INTEGER,
     postId       	INTEGER,
-	userName 	     	INTEGER,
+	userName 	    VARCHAR(255),
 	body 	     	TEXT,
     upvotes   	 	INTEGER default 0,
     creationTime 	timestamp,
