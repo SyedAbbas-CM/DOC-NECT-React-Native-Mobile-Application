@@ -47,6 +47,7 @@ CREATE TABLE Post(
 	postId 		 INTEGER AUTO_INCREMENT,
     userName     VARCHAR(255),
     title  		 VARCHAR(255) NOT NULL,
+    category     VARCHAR(255) NOT NULL,
     body 		 TEXT,
     creationTime timestamp default ( current_timestamp() ),
     PRIMARY KEY(postId),
