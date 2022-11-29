@@ -9,7 +9,7 @@ export const MemoInputComponent = React.memo(({name, label, disabled, props}) =>
     
     return(<TextInput style={{ ...styles.input }}
         onChangeText={(value) => setFieldValue(name, value)}
-        value={values[name]}
+        value={values ? values[name] : label}
         editable={disabled == 1 ? true : false}
         label= {label}
         mode="outlined"

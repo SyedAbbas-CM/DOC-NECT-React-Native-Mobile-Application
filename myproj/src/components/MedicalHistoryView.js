@@ -1,23 +1,39 @@
 import { View ,Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollView, Alert } from 'react-native'
-import { Avatar, Button, Card, Title, Paragraph, useTheme, FAB, IconButton  } from 'react-native-paper';
+import { Avatar, Button, Card, Title, Paragraph, useTheme, FAB, IconButton, Text  } from 'react-native-paper';
 import React , {useState} from 'react'
 import { useNavigation } from '@react-navigation/native';
 
-const details = {
-  name: "Mahad",
-  startDate : "20/2/2030",
-  endDate : "21/2/2031",
-  symptoms: "Meow Meow Meow",
-  description: "I am a cat. Meow Desu."
+const records = {
+  0: {
+    name: "I am turning into a Cat",
+    startDate : "2030-2-21",
+    endDate : "2031-2-27",
+    symptoms: "Meow Meow Meow",
+    description: "I am a cat. Meow Desu."
+  },
+  1: {
+    name: "Diabetes",
+    startDate : "2001-4-11",
+    endDate : "2000-6-1",
+    symptoms: "Looking at a Photo of Abbas with his hair down.",
+    description: "Have attempted self-treatment by performing an excorcism and cleansing of the soul."
+  },
+  2: {
+    name: "Head pain",
+    startDate : "2011-4-11",
+    endDate : "2012-1-1",
+    symptoms: "Problems began due to listening to my friends babble about retarded shit all the time. I am recovered now because I am home.",
+    description: "Constant headaches and butt pains. Feel really tired and sleepy"
+  }
 }
 
 
-const MedicalHistoryView = () => {
+const MedicalHistoryView = ({userHistory}) => {
     let isAlertActive = 0;
     const navigation = useNavigation()
     const theme = useTheme();
     const LeftContent = props => <Avatar.Icon {...props} icon="needle" />
-    const RightContent = props => <View marginRight="auto"><IconButton iconColor='red' icon="minus-circle" onPress={() => deleteRecord(props)}/></View>
+    const RightContent = props => <View marginRight="auto"><IconButton iconColor='#768207' icon="trash-can" onPress={() => deleteRecord(props)}/></View>
 
     const showAlert = () => {
       isAlertActive = 1;
@@ -48,50 +64,29 @@ const MedicalHistoryView = () => {
         <>
         <FAB
           icon = "plus"
-          style = {{...styles.fab}}     
+          style={{...styles.fab, backgroundColor: theme.colors.secondary}}   
           onPress= {() => navigation.navigate("MedicalHistory", {operation : "add"})}
           />
-        <View style = {styles.root}>
+        {userHistory && <View style = {styles.root}>
           <ScrollView>
-          <Card elevation={1} style = {{...styles.card, borderWidth:1, borderColor:"#007fff"}}>
-            <Card.Title key = {1} titleStyle={{fontSize:24, minHeight:'auto'}} 
-                        title="Diabetes" subtitle="Status: Ongoing" 
-                        left={LeftContent} right={RightContent}/>
-            <Card.Content>
-              <Paragraph>Symptoms: Looking at a Photo of Abbas with his hair down.</Paragraph>
-              <Paragraph>Have attempted self-treatment by performing an excorcism and cleansing of the soul. No effect.</Paragraph>
-            </Card.Content>
-            <Card.Actions>
-              <Button onPress={() => navigation.navigate("MedicalHistory", {operation : "edit", recordDetails: details})} mode="text" textColor={theme.colors.primary}>Edit</Button>
-            </Card.Actions>
-          </Card>
-
-          <Card elevation={1} style = {{...styles.card, borderWidth:1, borderColor:"#007fff"}}>
-            <Card.Title titleStyle={{fontSize:24, minHeight:'auto'}} title="Stage-3 Brain Cancer" subtitle="Status: Recovered" left={LeftContent} right={RightContent}/>
-            <Card.Content>
-              <Paragraph>Symptoms: Constant headaches and butt pains. Feel really tired and sleepy.</Paragraph>
-              <Paragraph>Problems began due to listening to my friends babble about retarded shit all the time. I am recovered now because I am home.</Paragraph>
-            </Card.Content>
-            <Card.Actions>
-  
-              <Button  onPress={() => navigation.navigate("MedicalHistory", {operation : "edit"})} mode="text" textColor={theme.colors.primary}>Edit</Button>
-            </Card.Actions>
-          </Card>
-
-          <Card elevation={1} style = {{...styles.card, borderWidth:1, borderColor:"#007fff"}}>
-            <Card.Title titleStyle={{fontSize:24, minHeight:'auto'}} title="Knee Surgery" subtitle="Status: Recovered" left={LeftContent}  right={RightContent} />
-            <Card.Content>
-              <Paragraph>Symptoms: Unable to walk on my right knee. Constant throbbing in my knee-cap.</Paragraph>
-              <Paragraph>I suspect that my Kneecap has been fractured. Collided hard with a Bear while playing Soccer in the Artic. Included X-ray images for reference.</Paragraph>
-            </Card.Content>
-            <Card.Actions>
-              <Button onPress={() => navigation.navigate("MedicalHistory", {operation : "edit"})} mode="text" textColor={theme.colors.primary}>Edit</Button>
-            </Card.Actions>
-          </Card>
+          {Object.keys(userHistory).map((key, index) => 
+              <Card elevation={1} style = {{...styles.card, borderWidth:1, borderColor:"#007fff"}}>
+                <Card.Title key = {index} titleStyle={{fontSize:24, minHeight:'auto'}} 
+                            title={userHistory[key].name} subtitle={userHistory[key].startDate + " to " + (userHistory[key].endDate.length > 0 ? userHistory[key].endDate : "")}
+                            left={LeftContent} right={RightContent}/>
+                <Card.Content>
+                  <Paragraph><Text>Symptoms: </Text>{userHistory[key].symptoms}</Paragraph>
+                  <Paragraph>{userHistory[key].description}</Paragraph>
+                </Card.Content>
+                <Card.Actions>
+                  <Button onPress={() => navigation.navigate("MedicalHistory", {operation : "edit", recordDetails: userHistory[key]})} mode="text" textColor={theme.colors.primary}>Edit</Button>
+                </Card.Actions>
+              </Card>       
+          )}
 
           <View style={{paddingBottom:75}}></View>
           </ScrollView>
-        </View>
+        </View>}
       </>
     );
 }

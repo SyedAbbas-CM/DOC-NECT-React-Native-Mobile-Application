@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollView, Alert, FlatList } from 'react-native'
-import { Text, TextInput, Button, Title, Paragraph, FAB } from 'react-native-paper';
+import { View, Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollView, Alert, FlatList, Keyboard } from 'react-native'
+import { Text, TextInput, Button, Title, Paragraph, FAB, useTheme} from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { FastField, useFormik, Formik, useFormikContext } from 'formik';
 import * as yup from 'yup';
@@ -8,10 +8,10 @@ import { MemoInputComponent } from './utils/MemoInputField';
 import { DatePickerModal } from 'react-native-paper-dates';
 
 const schema = yup.object({
-    firstname: yup.string()
+    firstName: yup.string()
         .max(30)
         .required("Required"),
-    lastname: yup.string()
+    lastName: yup.string()
         .required("Required"),
     email: yup.string()
         .email()
@@ -28,11 +28,45 @@ const schema = yup.object({
 })
 
 
-const ProfileView = ({ toggleProfileMode, userDetails, profileMode }) => {
+function calculate_age(birth_year, birth_month, birth_day)
+{
+    today_date = new Date();
+    today_year = today_date.getFullYear();
+    today_month = today_date.getMonth();
+    today_day = today_date.getDate();
+    age = today_year - birth_year;
+
+    if ( today_month < (birth_month - 1))
+    {
+        age--;
+    }
+    if (((birth_month - 1) == today_month) && (today_day < birth_day))
+    {
+        age--;
+    }
+    return age;
+}
+
+const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDetails }) => {
     let isAlertActive = 0;
+
+    const theme = useTheme();
     const [editMode, setEditMode] = React.useState(profileMode);
     const [showDropDown, setShowDropDown] = useState(false);
     const [datePickerOpen, setDatePickerOpen] = React.useState(false);
+    const [age, setAge] = useState(null);
+
+    const openDatePicker = () => {
+        Keyboard.dismiss();
+        setDatePickerOpen(true);
+    }
+
+    useEffect(() => {
+        if (userDetails) {
+            d = userDetails.dob.split('T')[0]
+            setAge(calculate_age(d.split('-')[0], d.split('-')[1], d.split('-')[2]).toString())
+        }
+    }, [])
 
     const [genderList, setGenderList] = useState([
         { label: "Male", value: "male" },
@@ -62,8 +96,11 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode }) => {
     const onConfirmDatePicker = React.useCallback(
         (params, setFieldValue) => {
           setDatePickerOpen(false);
-          console.log(params.date.toISOString().split('T')[0])
           setFieldValue("dob",params.date.toISOString().split('T')[0])
+
+          d = params.date.toISOString().split('T')[0]
+          console.log(calculate_age(d.split('-')[0], d.split('-')[1], d.split('-')[2]))
+          setAge(calculate_age(d.split('-')[0], d.split('-')[1], d.split('-')[2]).toString())
         },
         [setDatePickerOpen]
       );
@@ -82,23 +119,25 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode }) => {
 
     return (
         <>
+        {userDetails &&
             <Formik
                 validateOnChange={false}
                 validateOnBlur={false}
                 initialValues={{
-                    firstname: userDetails.firstname ? userDetails.firstname : "",
-                    lastname: userDetails.lastname ? userDetails.lastname : "",
-                    email: userDetails.email ? userDetails.email : "",
-                    age: userDetails.age ? userDetails.age : "",
-                    dob: userDetails.dob ? userDetails.dob : "",
-                    gender: userDetails.gender ? userDetails.gender : "",
-                    city: userDetails.city ? userDetails.city : "",
-                    about: userDetails.about ? userDetails.about : "",
+                    firstName: userDetails ? userDetails.firstName ? userDetails.firstName : "" : "",
+                    lastName: userDetails ? userDetails.lastName ? userDetails.lastName : "": "",
+                    email: userDetails ? userDetails.email ? userDetails.email : "": "",
+                    dob: userDetails ? userDetails.dob ? userDetails.dob : "": "",
+                    gender: userDetails ? userDetails.gender ? userDetails.gender : "": "",
+                    city: userDetails ? userDetails.city ? userDetails.city : "": "",
+                    about: userDetails ? userDetails.about ? userDetails.about : "": "",
                 }}
                 validationSchema={schema}
                 onSubmit={(values) => {
                     console.log(values);
+                    Keyboard.dismiss();
                     _toggleEditMode();
+                    updateUserDetails(...values);
                 }}>
                 {({
                     values,
@@ -112,24 +151,24 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode }) => {
                     <>
                     <FAB
                         icon={editMode == 0 ? "pencil" : "pencil-off"}
-                        style={styles.fab}
+                        style={{...styles.fab, backgroundColor: theme.colors.secondary}}
                         onPress={() => toggleEditMode(dirty)}
                     />
                     <View style={styles.root}>
-                        <ScrollView showsVerticalScrollIndicator={false}>
+                        <ScrollView keyboardShouldPersistTaps='handled' showsVerticalScrollIndicator={false}>
                             <View style={{ ...styles.row, flexDirection: "row", width: '100%' }}>
                                 <View style={{ width: '50%', paddingRight: 10 }}>
                                     <MemoInputComponent disabled={editMode} 
-                                                   name ={"firstname"} 
+                                                   name ={"firstName"} 
                                                    label="Firstname"/>
-                                    {errors.firstname && <Text style={{ ...styles.error }} variant='bodySmall'>{errors.firstname}</Text>}
+                                    {errors.firstName && <Text style={{ ...styles.error }} variant='bodySmall'>{errors.firstName}</Text>}
                                 </View>
 
                                 <View style={{ width: '50%', paddingLeft: 10 }}>
                                     <MemoInputComponent disabled={editMode} 
-                                                   name ={"lastname"} 
+                                                   name ={"lastName"} 
                                                    label="Lastname"/>
-                                    {errors.lastname && <Text style={{ ...styles.error }} variant='bodySmall'>{errors.lastname}</Text>}
+                                    {errors.lastName && <Text style={{ ...styles.error }} variant='bodySmall'>{errors.lastName}</Text>}
                                 </View>
                             </View>
 
@@ -143,8 +182,7 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode }) => {
                             <View style={{ ...styles.row, flexDirection: "row", width: '100%' }}>
                                 <View style={{ width: '42%', marginRight: '8%' }}>
                                     <TextInput style={{ ...styles.input }}
-                                        onChangeText={handleChange('age')}
-                                        value={values.age}
+                                        value={age}
                                         editable={false}
                                         label="Age"
                                         mode="outlined"
@@ -154,7 +192,7 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode }) => {
                                 </View>
 
                                 <View style={{ width: '42%', marginLeft: '8%', paddingTop: 5 }}>
-                                    <DropDownPicker disabledStyle={{ opacity: 0.6, borderColor: "lightgrey" }}
+                                    <DropDownPicker disabledStyle={{ opacity: 0.6,  borderColor: "lightgrey" }}
                                         placeholder="Gender"
                                         label="gender"
                                         listMode="SCROLLVIEW"
@@ -173,8 +211,7 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode }) => {
                             <View style={{ ...styles.row, flexDirection: "row", width: '100%' }}>
                                 <View style={{ width: '42%', marginRight: '8%' }}>
                                     <TextInput style={{ ...styles.input }}
-                                        // onChangeText={handleChange('dob')}
-                                        onFocus = {() => setDatePickerOpen(true)}                                        
+                                        onFocus = {openDatePicker}
                                         editable={true}
                                         value = {values.dob}
                                         label="D.O.B"
@@ -189,24 +226,6 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode }) => {
                                         onDismiss={onDismissDatePicker}
                                         onConfirm={(params) => onConfirmDatePicker(params, setFieldValue)}
                                         saveLabel={<Text style={{color:"white"}}>Save</Text>}
-                                        // validRange={{
-                                        //   startDate: new Date(2021, 1, 2),  // optional
-                                        //   endDate: new Date(), // optional
-                                        //   disabledDates: [new Date()] // optional
-                                        // }}
-                                        // onChange={} // same props as onConfirm but triggered without confirmed by user
-                                        // saveLabel="Save" // optional
-                                        // saveLabelDisabled={true} // optional, default is false
-                                        // uppercase={false} // optional, default is true
-                                        // label="Select period" // optional
-                                        // startLabel="From" // optional
-                                        // endLabel="To" // optional
-                                        // animationType="slide" // optional, default is slide on ios/android and none on web
-                                        // startYear={2000} // optional, default is 1800
-                                        // endYear={2100} // optional, default is 2200
-                                        // closeIcon="close" // optional, default is "close"
-                                        // editIcon="pencil" // optional, default is "pencil"
-                                        // calendarIcon="calendar" // optional, default is "calendar"
                                         />
                                     {errors.dob && <Text style={{ ...styles.error }} variant='bodySmall'>{errors.dob}</Text>}
                                 </View>
@@ -220,7 +239,7 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode }) => {
                                 </View>
                             </View>
 
-                            {userDetails.userrole == "doctor" &&
+                            {userDetails && userDetails.userRole == "doctor" &&
                                 <View style={{ ...styles.doctorView }}>
                                     <Text>Doctor Info</Text>
                                     <View style={{ ...styles.row }}>
@@ -264,7 +283,7 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode }) => {
                         </ScrollView>
                     </View>
                     </>
-                )}</Formik>
+                )}</Formik>}
         </>
     );
 }
@@ -309,7 +328,7 @@ const styles = StyleSheet.create({
         margin: 16,
         right: 0,
         bottom: 0,
-        zIndex: 99
+        zIndex: 99,
     },
     button: {
         marginTop: 10,

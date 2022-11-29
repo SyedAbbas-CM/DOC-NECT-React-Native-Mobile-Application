@@ -21,38 +21,17 @@ const ProfileScreen = () => {
       { key: 'third', title: 'Activity' },
     ]);
 
-  const user = {
-    username: "Shadow11",
-    firstname : "Raahim",
-    lastname : "Siddiqi",
-    email : "raahim.s@hotmail.com",
-    age : "21",
-    dob : "2003-4-7",
-    gender : "male",
-    city : "Karachi",
-    about : "I am cute.",
-    userrole: "user"
-  };
-
-  const doctor = {
-    username: "Shadow11",
-    firstname : "Syed",
-    lastname : "Abbas",
-    email : "vorix777@gmail.com",
-    age : "69",
-    dob : "2001-1-1",
-    gender : "female",
-    city : "Lahore",
-    about : "I am very cute.",
-    userrole: "doctor",
-    certificationName: "MBBS",
-    instituteName: "Aga Khan Hopsital"
-  };
+  const [user, setUser] = useState(null);
+  const [history, setHistory] = useState(null);
+  const [activty, setActivity] = useState(null);
 
     useEffect(() => {
       axios.get("http://192.168.150.226:8090/User/getUser/Shadow")
         .then((response) => {
-          // console.log(response.data);
+          let temp = response.data.data[0];
+          temp["dob"] = temp["dob"].split("T")[0]
+          temp["gender"] = temp["gender"].toLowerCase()
+          setUser(temp);
         })
         .catch((response) => {
           console.log(response);
@@ -60,23 +39,25 @@ const ProfileScreen = () => {
     }, [])
 
   const Profile = useCallback(() => {
-    console.log("Component re-render");
+    console.log("Profile Component re-render");
     return (
-      <ProfileView profileMode={hideProfile} userDetails={doctor} toggleProfileMode = {toggleProfileMode} />
+      <ProfileView updateUserDetails={updateUserDetails} profileMode={hideProfile} userDetails={user} toggleProfileMode = {toggleProfileMode} />
     );
-  }, [hideProfile])
+  }, [hideProfile, user])
   
   const MedicalHistory = useCallback(() => {
+    console.log("History Component re-render");
     return (
-      <MedicalHistoryView />
+      <MedicalHistoryView userHistory = {history}/>
     );
-  }, [])
+  }, [history])
   
   const Activity = useCallback(() => {
+    console.log("Activity Component re-render");
     return (
-      <ActivityView />
+      <ActivityView userActivity = {activty}/>
     );
-  }, [])
+  }, [activty])
   
   const renderScene = SceneMap({
     first:  Profile,
@@ -88,9 +69,21 @@ const ProfileScreen = () => {
     setHideProfile(!hideProfile);
   }
 
+  function updateUserDetails(newUserDetails) {
+    setUser({...user, ...newUserDetails});
+
+    axios.post("http://192.168.150.226:8090/User/updateProfile", newUserDetails)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((response) => {
+        console.log(response);
+      })
+  }
+
   return (
       <View style={styles.root}>  
-          {hideProfile == false &&
+          {user && user.userRole.toLowerCase() == "doctor" && hideProfile == false &&
           <View style={styles.fab}>
             <Image source={points}></Image>
             <View padding={2} left={6} top={34} position="absolute" backgroundColor="lightblue" borderRadius={8}>
@@ -114,6 +107,7 @@ const ProfileScreen = () => {
       
           <View style={{flex:1, width:'100%'}}  >
             <TabView
+              lazy
               navigationState={{ index, routes }}
               renderScene={renderScene}
               onIndexChange={setIndex}
