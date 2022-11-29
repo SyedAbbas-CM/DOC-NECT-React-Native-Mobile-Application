@@ -19,4 +19,5 @@ Router.route('/register').post(Validate(User.schema, User.createUser.params), Re
 Router.route('/getUser/:userName').get(Validate(User.schema, User.getUserByUserName.params), SearchByName);
 Router.route('/signIn').post(Validate(User.schema, User.signIn.params),signIn);
 Router.route('/updateProfile').put(Authenticate, Validate(User.schema, User.updateProfile.params), UpdateProfile);
+// Router.route('/certify').post(Authenticate, Validate, )
 module.exports = Router;

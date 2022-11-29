@@ -6,7 +6,9 @@ import Register from  '../screens/RegisterScreen'
 import HomeScreen  from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import MedicalHistoryScreen from '../screens/MedicalHistoryScreen';
+import CertificationScreen from '../screens/CertificationScreen';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
+
 const Stack = createNativeStackNavigator();
 
 const Navigation = () => {
@@ -16,6 +18,7 @@ const Navigation = () => {
     HomeScreen : HomeScreen,
     Profile : ProfileScreen,
     MedicalHistory: MedicalHistoryScreen,
+    Certification : CertificationScreen
   }
   
   return (

@@ -17,3 +17,4 @@ myproj/web-build/
 # macOS
 myproj/.DS_Store
 run.ps1
+myproj/config.js

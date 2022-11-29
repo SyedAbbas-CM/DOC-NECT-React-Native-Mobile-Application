@@ -62,7 +62,6 @@ const SigninScreen = () => {
       </Text>
 
       <SigninForm results={onSignIn}/>
-      <Button onPress={() => navigation.navigate("Profile")}>Go to profile</Button>
       <Button
         mode="outlined"
         onPress={onForgetPassword}

@@ -5,17 +5,15 @@ import { globalStyles, WrapWithKeyboardDismiss } from '../../global';
 import RegisterUser from '../../components/RegisterUser';
 import RegisterSelect from '../../components/RegisterSelect';
 import axios from 'axios';
-import { CertificationForm } from '../../components/CertificationForm';
 import { Alert } from 'react-native';
 import { SERVER_IP, SERVER_PORT } from '../../../config';
-
+import authContext from '../../context';
 const Register = () => {
+  const { setAuth } = React.useContext(authContext);
   const navigation = useNavigation();
   const [choice, setchoice] = useState(null);
-  const [showCertifForm, setshowCertifForm] = useState(false);
 
   const onRegisterUser = (formData) => {
-    console.log(formData);
     axios.post(
       `http://${SERVER_IP}:${SERVER_PORT}/api/register`,
       {
@@ -29,9 +27,10 @@ const Register = () => {
       },
       {timeout : 5000})
       .then(response => {
-        if (choice === "doctor") setshowCertifForm(true);
+        setAuth({...response.data.data[0], accessToken : response.data.accessToken});
+        if (choice === "doctor") navigation.navigate("Certification");
         else {
-          navigation.navigate("Signin");
+          navigation.navigate("HomeScreen");
         }
       })
       .catch(error => {
@@ -63,13 +62,13 @@ const Register = () => {
   }
 
   return (
-    choice === null ?
+    choice === null ?    
       <RegisterSelect onSelect={(ch) => setchoice(ch)} />
       :
-      !showCertifForm ?
+      // !showCertifForm ?
         <RegisterUser results={onRegisterUser} />
-        :
-        <CertificationForm results={onSubmitCertificationForm} />
+        // :
+        // <CertificationForm results={onSubmitCertificationForm} />
   );
 };
 

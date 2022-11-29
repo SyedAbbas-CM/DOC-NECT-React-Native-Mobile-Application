@@ -70,11 +70,9 @@ User.createUser = new function(){
     this.params = ["userName", "pass", "userRole", "firstName", "lastName", "email", "dob"];
     
     this.service = (data, results) => {
-        console.log('Creating user')
-        console.log(data)
         //placeholder ? are injection proof
-        const sql = 'INSERT INTO User(userName, pass, userRole, firstName, lastName, email) values(?, ?, ?, ?, ?, ?)';
-        db.query(sql, [data.userName,data.pass,data.userRole,data.firstName,data.lastName,data.email], (err, data) => {
+        const sql = 'INSERT INTO User(userName, pass, userRole, firstName, lastName, email, dob) values(?, ?, ?, ?, ?, ?, str_to_date(?, \'%Y-%m-%d\'))';
+        db.query(sql, [data.userName,data.pass,data.userRole,data.firstName,data.lastName,data.email, data.dob], (err, data) => {
             if(err){
                 console.log(err)
             }else{
@@ -111,15 +109,7 @@ User.getUserByEmail = new function(){
         //console.log(data)
         const sql = `SELECT * FROM User WHERE email = ?`;
         db.query(sql, [data.email], (err, data) => {
-            if(err){
-                console.log(err)
-            }else{
-
-            }
-            
-            
             results(!err? null : err, data);
-           
         });
     };
 };
@@ -130,11 +120,6 @@ User.getPasswordbyEmail = new function(){
     this.service = (data, results) => {
         const sql = `SELECT pass FROM User WHERE email = ?`;
         db.query(sql, [data.email], (err, data) => {
-            if(err){
-                console.log(err)
-            }else{
-
-            }
             results(!err? null : err, data);
            
         });
@@ -155,5 +140,4 @@ User.updateProfile = new function(){
         });
     }
 };
-
 module.exports = User;
