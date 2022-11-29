@@ -29,23 +29,35 @@ const ProfileScreen = ({userDetails}) => {
   const [activty, setActivity] = useState(null);
 
     useEffect(() => {
-      let url = `http://${SERVER_IP}:${SERVER_PORT}/api/getUser/`;
-      if (userDetails) {
-        url = url + userDetails.userName;
-      }
-      else {
-        url = url + auth.userName;
-      }
+      userName = userDetails ? userDetails.userName : auth.userName;
 
-      axios.get(url)
+      axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getUser/` + userName)
         .then((response) => {
           let temp = response.data.data[0];
           temp["dob"] = temp["dob"].split("T")[0]
-          temp["gender"] = temp["gender"].toLowerCase()
+          temp["gender"] = temp["gender"]? temp["gender"].toLowerCase() : null;
           setUser(temp);
         })
         .catch((response) => {
           console.log(response);
+        })
+
+      axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getHistory/` + userName)
+        .then((response) => {
+          console.log("history resp", response.data.data)
+          setHistory(response.data.data);
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+
+      axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getActivity/` + userName)
+        .then((response) => {
+          console.log("activty resp", response.data.data)
+          setActivity(response.data.data);
+        })
+        .catch((error) => {
+          console.log(error)
         })
     }, [])
 
@@ -82,8 +94,6 @@ const ProfileScreen = ({userDetails}) => {
 
   function updateUserDetails(newUserDetails) {
     setUser({...user, ...newUserDetails});
-    console.log(`BEARER ${auth.accessToken}`)
-    console.log(newUserDetails["about"], newUserDetails.about);
 
     axios.post(`http://${SERVER_IP}:${SERVER_PORT}/api/updateProfile`, 
       {
@@ -94,6 +104,42 @@ const ProfileScreen = ({userDetails}) => {
         firstName: newUserDetails.firstName,
         gender: newUserDetails.gender,
         lastName: newUserDetails.lastname
+      },
+      {
+        headers: {
+          "Authorization": `BEARER ${auth.accessToken}`
+        }
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+  }
+
+  function addRecord(newRecord) {
+    axios.post(`http://${SERVER_IP}:${SERVER_PORT}/api/addRecord`, {
+
+    },
+    {
+      headers: {
+        "Authorization": `BEARER ${auth.accessToken}`
+      }      
+    })
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  }
+
+  function updateRecord(updatedRecord) {
+
+    axios.post(`http://${SERVER_IP}:${SERVER_PORT}/api/updateRecord`, 
+      {
+
       },
       {
         headers: {
@@ -126,8 +172,8 @@ const ProfileScreen = ({userDetails}) => {
             </View>
             
             <View style={{...styles.centerX}}>
-              <Text variant="bodyLarge" style={{...styles.centerX}}>Raahim Siddiqi</Text>
-              <Text variant="bodySmall" style={{...styles.centerX}}>User from: 11/22/2001</Text>
+              <Text variant="bodyLarge" style={{...styles.centerX}}>{user && user.userName}</Text>
+              <Text variant="bodySmall" style={{...styles.centerX}}>User from: {user && user.joinDate.split('T')[0]}</Text>
             </View>
           </View>
           }

@@ -123,12 +123,43 @@ const UpdateProfile = (req, res) => {
         res.status(200).json(data);   
     });
 }
+
+const  SearchHistoryByName = asyncWrapper(async(req, res) => {
+    User.getHistoryByUserName.service(req.params, (dbError, data) => {
+        if(dbError){
+            res.status(400).json({
+                errorCode : "db/unknown-error",
+            });
+        }
+        else
+            res.status(200).json({
+                data : data
+            });
+    });
+})
+
+const  SearchActivityByName = asyncWrapper(async(req, res) => {
+    User.getActivityByUserName.service(req.params, (dbError, data) => {
+        if(dbError){
+            res.status(400).json({
+                errorCode : "db/unknown-error",
+            });
+        }
+        else
+            res.status(200).json({
+                data : data
+            });
+    });
+})
+
 module.exports = {
         Register,
         signIn,
         SearchByEmail,
         SearchByName,
-        UpdateProfile
+        UpdateProfile,
+        SearchHistoryByName,
+        SearchActivityByName
 }
 
 

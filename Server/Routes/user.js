@@ -8,7 +8,9 @@ const{
  signIn,
  Register,
  SearchByName,
- UpdateProfile
+ UpdateProfile,
+ SearchHistoryByName,
+ SearchActivityByName
 } = require('../Controllers/User.controller')
 
 
@@ -19,4 +21,6 @@ Router.route('/register').post(Validate(User.schema, User.createUser.params), Re
 Router.route('/getUser/:userName').get(Validate(User.schema, User.getUserByUserName.params), SearchByName);
 Router.route('/signIn').post(Validate(User.schema, User.signIn.params),signIn);
 Router.route('/updateProfile').put(Authenticate, Validate(User.schema, User.updateProfile.params), UpdateProfile);
+Router.route('/getHistory/:userName').get(Validate(User.schema, User.getHistoryByUserName.params), SearchHistoryByName);
+Router.route('/getActivity/:userName').get(Validate(User.schema, User.getActivityByUserName.params), SearchActivityByName);
 module.exports = Router;

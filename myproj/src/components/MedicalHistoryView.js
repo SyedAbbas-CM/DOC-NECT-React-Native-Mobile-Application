@@ -67,12 +67,12 @@ const MedicalHistoryView = ({userHistory}) => {
           style={{...styles.fab, backgroundColor: theme.colors.secondary}}   
           onPress= {() => navigation.navigate("MedicalHistory", {operation : "add"})}
           />
-        {userHistory && <View style = {styles.root}>
+        {userHistory.length >= 1 ? <View style = {styles.root}>
           <ScrollView>
           {Object.keys(userHistory).map((key, index) => 
-              <Card elevation={1} style = {{...styles.card, borderWidth:1, borderColor:"#007fff"}}>
-                <Card.Title key = {index} titleStyle={{fontSize:24, minHeight:'auto'}} 
-                            title={userHistory[key].name} subtitle={userHistory[key].startDate + " to " + (userHistory[key].endDate.length > 0 ? userHistory[key].endDate : "")}
+              <Card key = {index} elevation={1} style = {{...styles.card, borderWidth:1, borderColor:"#007fff"}}>
+                <Card.Title titleStyle={{fontSize:20, minHeight:'auto'}} 
+                            title={userHistory[key].ailmentName} subtitle={userHistory[key].startDate.split('T')[0] + " to " + (userHistory[key].endDate.length > 0 ? userHistory[key].endDate.split('T')[0] : "")}
                             left={LeftContent} right={RightContent}/>
                 <Card.Content>
                   <Paragraph><Text>Symptoms: </Text>{userHistory[key].symptoms}</Paragraph>
@@ -86,7 +86,11 @@ const MedicalHistoryView = ({userHistory}) => {
 
           <View style={{paddingBottom:75}}></View>
           </ScrollView>
-        </View>}
+        </View> : 
+        <View style={styles.root}>
+          <Text style={{...styles.center}}>No Records Found</Text>
+        </View>
+        }
       </>
     );
 }
@@ -97,32 +101,37 @@ export default MedicalHistoryView;
 const styles = StyleSheet.create({
   root : {
     flex:1,
-    paddingTop: 5,
   },
-    centerX : {
-      marginLeft : 'auto', 
-      marginRight : 'auto'
-    },
-    button : {
-      borderRadius: 0
-    }, 
-    card : {
-      marginLeft: 5,
-      marginRight: 8,
-      marginTop: 10
-    },
-    fab: {
-      position:'absolute',
-      margin: 16,
-      right: 0,
-      bottom: 0,
-      zIndex:99
-    },
-    iconButton: {
-      boxShadow : "none",
-      backgroundColor : 'white',
-      borderRadius : 0,
-      borderColor : 'transparent',
-      borderColor : "white"
-    }
+  center : {
+    marginLeft : 'auto', 
+    marginRight : 'auto',
+    marginTop : 'auto',
+    marginBottom: 'auto'
+  },
+  centerX : {
+    marginLeft : 'auto', 
+    marginRight : 'auto'
+  },
+  button : {
+    borderRadius: 0
+  }, 
+  card : {
+    marginLeft: 5,
+    marginRight: 8,
+    marginTop: 10
+  },
+  fab: {
+    position:'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+    zIndex:99
+  },
+  iconButton: {
+    boxShadow : "none",
+    backgroundColor : 'white',
+    borderRadius : 0,
+    borderColor : 'transparent',
+    borderColor : "white"
+  }
 })
