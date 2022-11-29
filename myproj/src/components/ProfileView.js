@@ -145,7 +145,6 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
                     handleSubmit,
                     setFieldValue,
                     dirty
-                    /* and other goodies */
                 }) => (
                     <>
                     <FAB

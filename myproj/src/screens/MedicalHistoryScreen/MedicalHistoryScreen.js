@@ -1,12 +1,16 @@
-import { View, Image, StyleSheet, ScrollView } from 'react-native'
+import { View, Image, StyleSheet, ScrollView, Alert } from 'react-native'
 import React, { useState, useCallback } from 'react'
 import { Text, TextInput, Button, Title, useTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useFormik } from 'formik';
+import { useContext } from 'react';
+import authContext from '../../context';
 import * as yup from 'yup';
+import axios from 'axios';
+import { SERVER_IP, SERVER_PORT } from '../../../config';
 
 const schema = yup.object({
-  name: yup.string()
+  ailmentName: yup.string()
     .max(30)
     .required("Required"),
   startDate: yup.date()
@@ -14,18 +18,20 @@ const schema = yup.object({
   endDate: yup.date(),
   symptoms: yup.string()
     .max(300, "Max character limit reached (300)")
+    .min(30, "Please enter more information")
     .required("Required"),
   description: yup.string()
-    .max(300, "Max character limit reached (300)")
+    .max(1000, "Max character limit reached (1000)")
 })
 
 const MedicalHistoryScreen = ({ route }) => {
+  const auth = useContext(authContext);
   const theme = useTheme();
   const navigation = useNavigation();
   const { operation } = route.params;
   const formik = useFormik({
     initialValues: {
-      name: operation === "edit" ? route.params.recordDetails.name : "",
+      ailmentName: operation === "edit" ? route.params.recordDetails.ailmentName : "",
       symptoms: operation === "edit" ? route.params.recordDetails.symptoms : "",
       description: operation === "edit" ? route.params.recordDetails.description : "",
       startDate: operation === "edit" ? route.params.recordDetails.startDate : "",
@@ -34,11 +40,38 @@ const MedicalHistoryScreen = ({ route }) => {
     validationSchema: schema,
     onSubmit: (values) => {
       console.log(values);
+      addRecord(values);
     },
   })
 
-  const handleSubmit = () => {
-    navigation.navigate("Profile")
+  function addRecord(newRecord) {
+    console.log("client token: ", auth.auth.accessToken)
+    axios.post(`http://${SERVER_IP}:${SERVER_PORT}/api/addRecord`, newRecord,
+    {
+      headers: {
+        "authorization": `BEARER ${auth.auth.accessToken}`
+      }      
+    })
+    .then((response) => {
+      console.log(response);
+      navigation.navigate("Profile");
+    })
+    .catch((error) => {
+      if(error.response){
+        switch(error.response.data.errorCode){
+            case "auth/unauthorized-access":
+                Alert.alert("Unauthorized Access!", "Unauthorized access has been detected. Please log in again.");
+                // navigation.navigate("SignIn");
+                break;
+            default:
+                console.log(error.response.errorCode);
+                Alert.alert("Invalid request.", "Your request could not be processed. Please try again later or contact support.");
+                break;
+        }
+     }
+      else
+        Alert.alert("404", "The server is irresponsive. Please try again later or contact support.");
+    })
   }
 
   return (
@@ -53,8 +86,8 @@ const MedicalHistoryScreen = ({ route }) => {
           <Text variant='bodyLarge'>Title </Text>
           <TextInput style={{ ...styles.input }}
             dense
-            onChangeText={formik.handleChange('name')}
-            value={formik.values.name}
+            onChangeText={formik.handleChange('ailmentName')}
+            value={formik.values.ailmentName}
           >
           </TextInput>
         </View>
@@ -103,7 +136,7 @@ const MedicalHistoryScreen = ({ route }) => {
           ></TextInput>
         </View>
 
-        <Button onPress={handleSubmit} mode="contained" style={{ ...styles.button }}>
+        <Button onPress={formik.handleSubmit} mode="contained" style={{ ...styles.button }}>
           Submit
         </Button>
       </ScrollView>

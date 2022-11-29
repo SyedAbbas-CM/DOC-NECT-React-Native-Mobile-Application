@@ -44,7 +44,6 @@ const ProfileScreen = ({userDetails}) => {
 
       axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getHistory/` + userName)
         .then((response) => {
-          console.log("history resp", response.data.data)
           setHistory(response.data.data);
         })
         .catch((error) => {
@@ -53,7 +52,6 @@ const ProfileScreen = ({userDetails}) => {
 
       axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getActivity/` + userName)
         .then((response) => {
-          console.log("activty resp", response.data.data)
           setActivity(response.data.data);
         })
         .catch((error) => {
@@ -95,45 +93,23 @@ const ProfileScreen = ({userDetails}) => {
   function updateUserDetails(newUserDetails) {
     setUser({...user, ...newUserDetails});
 
-    axios.post(`http://${SERVER_IP}:${SERVER_PORT}/api/updateProfile`, 
+    axios.put(`http://${SERVER_IP}:${SERVER_PORT}/api/updateProfile`, 
       {
-        about: newUserDetails.about,
-        city: newUserDetails.city,
-        dob: newUserDetails.dob,
-        email: newUserDetails.email,
-        firstName: newUserDetails.firstName,
-        gender: newUserDetails.gender,
-        lastName: newUserDetails.lastname
+        newUserDetails
       },
       {
         headers: {
-          "Authorization": `BEARER ${auth.accessToken}`
+          "authorization": `BEARER ${auth.accessToken}`
         }
       })
       .then((response) => {
-        console.log(response);
+        console.log("update Profile success");
       })
       .catch((error) => {
-        console.log(error);
+        console.log("update Profile failed");
       })
   }
 
-  function addRecord(newRecord) {
-    axios.post(`http://${SERVER_IP}:${SERVER_PORT}/api/addRecord`, {
-
-    },
-    {
-      headers: {
-        "Authorization": `BEARER ${auth.accessToken}`
-      }      
-    })
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((error) => {
-      console.log(error);
-    })
-  }
 
   function updateRecord(updatedRecord) {
 

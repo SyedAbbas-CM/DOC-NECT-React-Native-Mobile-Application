@@ -13,15 +13,13 @@ const ActivityView = ({userActivity}) => {
       {userActivity.length >= 1 ? <View style = {styles.root}>
         <ScrollView>
           {Object.keys(userActivity).map((key, index) => 
-            <View style = {styles.root}>
-              <Card key={key} elevation={1} style = {{...styles.card, borderWidth:1, borderColor:"#007fff"}}>
+              <Card key={index} elevation={1} style = {{...styles.card, borderWidth:1, borderColor:"#007fff"}}>
                 <Card.Title titleStyle={{fontSize:20, minHeight:'auto'}} title={userActivity[key].title} left={CommentIcon} 
                             subtitle={"Category: " + userActivity[key].category}/>
                 <Card.Content>
                   <Paragraph>{userActivity[key].body}</Paragraph>
                 </Card.Content>
-              </Card>
-            </View>)}
+              </Card>)}
         </ScrollView>
       </View> :
         <View style={styles.root}>
@@ -48,5 +46,11 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 8,
     marginTop: 10
-  }
+  },
+  center : {
+    marginLeft : 'auto', 
+    marginRight : 'auto',
+    marginTop : 'auto',
+    marginBottom: 'auto'
+  },
 })
