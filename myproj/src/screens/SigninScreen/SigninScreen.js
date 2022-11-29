@@ -1,14 +1,17 @@
 import { StyleSheet, View, Image, useWindowDimensions, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import React from 'react'
+import React, { useContext } from 'react'
 import { Text, Button } from 'react-native-paper';
 import { globalStyles, WrapWithKeyboardDismiss } from '../../global';
 import heartBeat from '../../../assets/logo.png';
 import axios from "axios"
 import SigninForm from '../../components/SigninForm';
 import { SERVER_IP, SERVER_PORT } from '../../../config';
+import authContext from '../../context';
 
 const SigninScreen = () => {
+  const ThemeContext = React.createContext('light');
+  const { setAuth } = useContext(authContext);
 
   const { height } = useWindowDimensions();
   const navigation = useNavigation();
@@ -21,9 +24,9 @@ const SigninScreen = () => {
         pass : formData.password
       }, 
       {timeout : 5000})
-      .then( response => {
-        const authObject = {...response.data.data[0], accessToken : response.data.accessToken};
-        /* Save it globally  */
+      .then((response) => {
+        const authObject = {accessToken : response.data.accessToken};
+        setAuth(authObject);
         navigation.navigate("HomeScreen");
       })
       .catch( error => {
@@ -44,7 +47,7 @@ const SigninScreen = () => {
 
   const onForgetPassword = () => {
   }
-
+  
   return (
     // <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     <View style={globalStyles.root}>

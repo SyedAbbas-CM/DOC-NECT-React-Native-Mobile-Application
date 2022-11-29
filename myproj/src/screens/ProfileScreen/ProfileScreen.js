@@ -1,5 +1,5 @@
 import { View ,Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollView, KeyboardAvoidingView} from 'react-native'
-import React ,{useState, useCallback, useEffect} from 'react'
+import React ,{useState, useCallback, useEffect, useContext} from 'react'
 import { Icon, Text, TextInput, Button, Title, Paragraph,  SegmentedButtons, FAB, Avatar} from 'react-native-paper';
 import profilePic from "../../../assets/profile.png"
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
@@ -9,9 +9,12 @@ import MedicalHistoryView from '../../components/MedicalHistoryView';
 import { useNavigation } from '@react-navigation/native';
 import points from "../../../assets/points.png"
 import axios from 'axios';
+import authContext from '../../context';
+import { SERVER_IP, SERVER_PORT } from '../../../config';
 
 const ProfileScreen = () => {
   const navigation = useNavigation()
+  const { auth } = useContext(authContext);
   const [hideProfile, setHideProfile] = React.useState(false);
   const [index, setIndex] = React.useState(0);
   const window = useWindowDimensions();
@@ -24,9 +27,14 @@ const ProfileScreen = () => {
   const [user, setUser] = useState(null);
   const [history, setHistory] = useState(null);
   const [activty, setActivity] = useState(null);
+  console.log("context" + "Bearer " + String(auth.accessToken))
 
     useEffect(() => {
-      axios.get("http://192.168.150.226:8090/User/getUser/Shadow")
+      axios.get(`http://${SERVER_IP}:${SERVER_PORT}/User/getUser/Shadow`, {
+        headers: {
+          Authorization: "Bearer " + String(auth.accessToken)
+       }
+      })
         .then((response) => {
           let temp = response.data.data[0];
           temp["dob"] = temp["dob"].split("T")[0]
