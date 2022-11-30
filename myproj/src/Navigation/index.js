@@ -8,6 +8,8 @@ import ProfileScreen from '../screens/ProfileScreen';
 import MedicalHistoryScreen from '../screens/MedicalHistoryScreen';
 import CertificationScreen from '../screens/CertificationScreen';
 import PostCreationScreen from '../screens/PostCreationScreen';
+import PolicyScreen from '../screens/PolicyScreen/PolicyScreen';
+import SettingsScreen from '../screens/SettingsScreen/SettingsScreen';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 const Stack = createNativeStackNavigator();
@@ -20,7 +22,9 @@ const Navigation = () => {
     Profile : ProfileScreen,
     MedicalHistory: MedicalHistoryScreen,
     Certification : CertificationScreen,
-    PostCreation : PostCreationScreen
+    PostCreation : PostCreationScreen,
+    Policy: PolicyScreen,
+    Settings: SettingsScreen
   }
   
   return (

@@ -5,7 +5,10 @@ import React from 'react'
 import { Text, TextInput, Button, HelperText, Checkbox } from 'react-native-paper';
 import { globalStyles } from '../global';
 import { DatePickerModal } from 'react-native-paper-dates';
+import { useNavigation } from '@react-navigation/native';
+
 const RegisterUser = ({ results }) => {
+    const navigation = useNavigation();
     const [agree, setagree] = React.useState(false);
     const [dateOpen, setdateOpen] = React.useState(false);
     const schema = yup.object({
@@ -81,7 +84,7 @@ const RegisterUser = ({ results }) => {
                                 I agree to
                                 <Text
                                     style={{ color: "#3796f3", textDecorationLine: "underline", fontWeight: "bold" }}
-                                    onPress={() => console.log("Hello World from src/components/RegisterUser.js Line 73")}
+                                    onPress={() => navigation.navigate("Policy")}
                                 >
                                     &nbsp;Docnet's terms and conditions.
                                 </Text>
