@@ -1,5 +1,5 @@
 import { View ,Image, StyleSheet, ScrollView } from 'react-native'
-import { Avatar, Button, Card, Title, Paragraph, useTheme  } from 'react-native-paper';
+import { Avatar, Button, Card, Title, Paragraph, useTheme, Text  } from 'react-native-paper';
 import React , {useState} from 'react'
 
 const CommentIcon = props => <Avatar.Icon {...props} icon="comment" />
