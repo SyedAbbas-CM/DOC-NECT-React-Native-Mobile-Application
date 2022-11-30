@@ -7,6 +7,7 @@ import HomeScreen  from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import MedicalHistoryScreen from '../screens/MedicalHistoryScreen';
 import CertificationScreen from '../screens/CertificationScreen';
+import PostCreationScreen from '../screens/PostCreationScreen';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 const Stack = createNativeStackNavigator();
@@ -18,7 +19,8 @@ const Navigation = () => {
     HomeScreen : HomeScreen,
     Profile : ProfileScreen,
     MedicalHistory: MedicalHistoryScreen,
-    Certification : CertificationScreen
+    Certification : CertificationScreen,
+    PostCreation : PostCreationScreen
   }
   
   return (

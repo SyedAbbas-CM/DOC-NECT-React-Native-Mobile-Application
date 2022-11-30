@@ -8,11 +8,20 @@ import axios from "axios"
 import SigninForm from '../../components/SigninForm';
 import { SERVER_IP, SERVER_PORT } from '../../../config';
 import authContext from '../../context';
+import { useIsFocused } from "@react-navigation/native";
 
 const SigninScreen = () => {
   const { setAuth } = useContext(authContext);
   const { height } = useWindowDimensions();
   const navigation = useNavigation();
+
+  const isFocused = useIsFocused();
+  React.useEffect(() => {
+      // Call only when screen open or when back on screen 
+      if(isFocused){ 
+        setAuth(null);
+      }
+  }, [isFocused]);
 
   const onSignIn = (formData) => {
     axios.post(
@@ -80,7 +89,6 @@ const SigninScreen = () => {
         Dont have an account? Register here.
       </Button>
     </View>
-    // </TouchableWithoutFeedback>
   );
 };
 
