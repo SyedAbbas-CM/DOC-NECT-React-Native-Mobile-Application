@@ -37,7 +37,7 @@ export default PostCreationScreen = () => {
                     <ScrollView>
                         <TextInput
                             placeholder="Title"
-                            style={{ fontWeight: 'bold', backgroundColor: "white", fontSize: 25, paddingVertical: 10 }}
+                            style={{ fontWeight: 'bold', backgroundColor: "transparent", fontSize: 25, paddingVertical: 10 }}
                             mode='flat'
                             value={values.title}
                             onChangeText={handleChange("title")}
@@ -53,7 +53,7 @@ export default PostCreationScreen = () => {
                         <TextInput
                             multiline
                             placeholder="Write something down!"
-                            style={{ fontSize: 20, flexGrow: 1 }}
+                            style={{ fontSize: 20, flexGrow: 1 , backgroundColor : "transparent"}}
                             mode='outlined'
                             value={values.body}
                             onChangeText={handleChange("body")}
