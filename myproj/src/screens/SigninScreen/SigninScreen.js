@@ -7,11 +7,12 @@ import heartBeat from '../../../assets/logo.png';
 import axios from "axios"
 import SigninForm from '../../components/SigninForm';
 import { SERVER_IP, SERVER_PORT } from '../../../config';
-import authContext from '../../context';
+import { authContext, themeContext } from '../../context';
 import { useIsFocused } from "@react-navigation/native";
 
 const SigninScreen = () => {
   const { setAuth } = useContext(authContext);
+  const { setTheme} = useContext(themeContext);
   const { height } = useWindowDimensions();
   const navigation = useNavigation();
 
@@ -34,6 +35,7 @@ const SigninScreen = () => {
       .then((response) => {
         const authObject = {...response.data.data[0], accessToken : response.data.accessToken};
         setAuth(authObject);
+        setTheme(response.data.data[0].theme)
         navigation.navigate("HomeScreen");
       })
       .catch( error => {

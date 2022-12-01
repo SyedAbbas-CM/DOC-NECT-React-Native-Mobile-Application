@@ -9,14 +9,18 @@ import MedicalHistoryView from '../../components/MedicalHistoryView';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import points from "../../../assets/points.png"
 import axios from 'axios';
-import authContext from '../../context';
+import { authContext, themeContext } from '../../context';
 import { SERVER_IP, SERVER_PORT } from '../../../config';
 
 
-const ProfileScreen = ({userDetails}) => {
+const ProfileScreen = ({route}) => {
   const navigation = useNavigation()
   const isFocused = useIsFocused();
   const { auth } = useContext(authContext);
+  const { theme } = useContext(themeContext);
+  const targetUserName = route.params
+  const styles = createStyles(theme);
+
   const [hideProfile, setHideProfile] = React.useState(false);
   const [index, setIndex] = React.useState(0);
   const window = useWindowDimensions();
@@ -65,7 +69,7 @@ const ProfileScreen = ({userDetails}) => {
   }
 
     useEffect(() => {
-      userName = userDetails ? userDetails.userName : auth.userName;
+      userName = targetUserName ? targetUserName.userName : auth.userName;
       getUser(userName);
       getHistory(userName);
       getActivity(userName);
@@ -101,6 +105,16 @@ const ProfileScreen = ({userDetails}) => {
   function toggleProfileMode() {
     setHideProfile(!hideProfile);
   }
+
+  const renderTabBar = props => (
+    <TabBar
+      {...props}
+      indicatorStyle={{ backgroundColor: "white" }}
+      style={{ backgroundColor: theme.colors.secondary }}
+    />
+  );
+
+  console.log(theme.colors.primary)
 
   function updateUserDetails(newUserDetails) {
     setUser({...user, ...newUserDetails});
@@ -141,21 +155,21 @@ const ProfileScreen = ({userDetails}) => {
           {user && user.userRole.toLowerCase() == "doctor" && hideProfile == false &&
           <View style={styles.fab}>
             <Image source={points}></Image>
-            <View padding={2} left={6} top={34} position="absolute" backgroundColor="lightblue" borderRadius={8}>
+            <View padding={2} left={6} top={34} position="absolute" borderRadius={8}>
               <Text style={{...styles.centerX}} variant='bodySmall' color="black">100</Text>
             </View>
           </View>}
 
           {hideProfile == false &&
-          <View style={{backgroundColor:"white", width:'100%', paddingBottom:10}}> 
+          <View style={{backgroundColor: theme.colors.primaryContainer, width:'100%', paddingBottom:10}}> 
             <View style={{...styles.centerX, paddingBottom:10}}>
               <Image source={profilePic}>
               </Image>
             </View>
             
             <View style={{...styles.centerX}}>
-              <Text variant="bodyLarge" style={{...styles.centerX}}>{user && user.userName}</Text>
-              <Text variant="bodySmall" style={{...styles.centerX}}>User from: {user && user.joinDate.split('T')[0]}</Text>
+              <Text style={{...styles.centerX, ...styles.text_medium}}>{user && user.userName}</Text>
+              <Text style={{...styles.centerX, ...styles.text_small}}>User from: {user && user.joinDate.split('T')[0]}</Text>
             </View>
           </View>
           }
@@ -163,6 +177,7 @@ const ProfileScreen = ({userDetails}) => {
           <View style={{flex:1, width:'100%'}}  >
             <TabView
               lazy
+              renderTabBar={renderTabBar}
               navigationState={{ index, routes }}
               renderScene={renderScene}
               onIndexChange={setIndex}
@@ -174,7 +189,7 @@ const ProfileScreen = ({userDetails}) => {
 }
  
 
-const styles = StyleSheet.create({
+const createStyles = ({colors}) => StyleSheet.create({
     root : {
       flex:1,
       marginTop: 6
@@ -200,7 +215,19 @@ const styles = StyleSheet.create({
       left: 0,
       top: 0,
       zIndex: 99
-  },
+    },
+    heading: {
+      color: colors.primaryText,
+      fontSize:20
+    },
+    text_medium : {
+        color: colors.primaryText,
+        fontSize:16
+    },
+    text_small : {
+        color: colors.primaryText,
+        fontSize:13
+    },
   })
 
 export default ProfileScreen;

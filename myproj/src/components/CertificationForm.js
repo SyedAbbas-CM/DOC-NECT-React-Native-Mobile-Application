@@ -6,6 +6,8 @@ import { globalStyles } from "../global";
 import documentIcon from '../../assets/documents2.png';
 import React from "react";
 import { DatePickerModal } from "react-native-paper-dates";
+
+
 export const CertificationForm = ({ results }) => {
     const [dateOpen, setdateOpen] = React.useState("");
     const schema = yup.object({

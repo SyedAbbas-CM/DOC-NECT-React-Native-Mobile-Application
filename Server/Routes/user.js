@@ -9,7 +9,9 @@ const{
  Register,
  SearchByName,
  UpdateProfile,
+ UpdateSettings,
  SearchActivityByName,
+ SearchSettingsByName,
  CertifyUser
 } = require('../Controllers/User.controller');
 const {
@@ -17,7 +19,8 @@ const {
     addRecord,
     deleteRecord,
     updateRecord
-} = require('../Controllers/History.controller')
+} = require('../Controllers/History.controller');
+const { updateSettings } = require('../Model/User.model');
 
 
 const Router = express.Router();
@@ -37,5 +40,8 @@ Router.route('/addRecord').post(Authenticate, Validate(History.schema, History.a
 Router.route('/updateRecord').put(Authenticate, Validate(History.schema, History.updateRecord.params), updateRecord);
 Router.route('/deleteRecord').post(Authenticate, Validate(History.schema, History.deleteRecord.params), deleteRecord);
 
+
+Router.route('/getSettings').get(Authenticate, Validate(User.schema, User.getSettingsByUserName.params), SearchSettingsByName);
+Router.route('/updateSettings').post(Authenticate, Validate(User.schema, User.updateSettings.params), UpdateSettings);
 
 module.exports = Router;

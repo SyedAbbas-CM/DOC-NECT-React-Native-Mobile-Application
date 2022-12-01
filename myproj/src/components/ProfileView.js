@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollView, Alert, FlatList, Keyboard } from 'react-native'
 import { Text, TextInput, Button, Title, Paragraph, FAB, useTheme} from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -6,6 +6,7 @@ import { FastField, useFormik, Formik, useFormikContext } from 'formik';
 import * as yup from 'yup';
 import { MemoInputComponent } from './utils/MemoInputField';
 import { DatePickerModal } from 'react-native-paper-dates';
+import { themeContext } from '../context';
 
 const schema = yup.object({
     firstName: yup.string()
@@ -50,7 +51,9 @@ function calculate_age(birth_year, birth_month, birth_day)
 const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDetails }) => {
     let isAlertActive = 0;
 
-    const theme = useTheme();
+    const {theme} = useContext(themeContext);
+    const styles = createStyles(theme);
+
     const date = new Date();
     const [editMode, setEditMode] = React.useState(profileMode);
     const [showDropDown, setShowDropDown] = useState(false);
@@ -149,6 +152,7 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
                 }) => (
                     <>
                     <FAB
+                        color="white"
                         icon={editMode == 0 ? "pencil" : "pencil-off"}
                         style={{...styles.fab, backgroundColor: theme.colors.secondary}}
                         onPress={() => toggleEditMode(dirty)}
@@ -159,14 +163,22 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
                                 <View style={{ width: '50%', paddingRight: 10 }}>
                                     <MemoInputComponent disabled={editMode} 
                                                    name ={"firstName"} 
-                                                   label="Firstname"/>
+                                                   label="Firstname"
+                                                   styles={styles.input}
+                                                   textColor={styles.text_medium.color}
+                                                   labeltextstyles={styles.text_small}
+                                                   />
                                     {errors.firstName && <Text style={{ ...styles.error }} variant='bodySmall'>{errors.firstName}</Text>}
                                 </View>
 
                                 <View style={{ width: '50%', paddingLeft: 10 }}>
                                     <MemoInputComponent disabled={editMode} 
                                                    name ={"lastName"} 
-                                                   label="Lastname"/>
+                                                   label="Lastname"
+                                                   styles={styles.input}
+                                                   textColor={styles.text_medium.color}
+                                                   labeltextstyles={styles.text_small}
+                                                   />
                                     {errors.lastName && <Text style={{ ...styles.error }} variant='bodySmall'>{errors.lastName}</Text>}
                                 </View>
                             </View>
@@ -174,7 +186,11 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
                             <View style={{ ...styles.row }}>
                                 <MemoInputComponent disabled={editMode} 
                                                    name ={"email"} 
-                                                   label="Email"/>
+                                                   label="Email"
+                                                   styles={styles.input}
+                                                   textColor={styles.text_medium.color}
+                                                   labeltextstyles={styles.text_small}
+                                                   />
                                 {errors.email && <Text style={{ ...styles.error }} variant='bodySmall'>{errors.email}</Text>}
                             </View>
 
@@ -183,8 +199,8 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
                                     <TextInput style={{ ...styles.input }}
                                         value={age}
                                         editable={false}
-                                        label="Age"
-                                        mode="outlined"
+                                        label={<Text style={styles.text_small}>Age</Text>}
+                                        textColor={styles.text_medium.color}
                                         disabled
                                     ></TextInput>
                                     {errors.age && <Text style={{ ...styles.error }} variant='bodySmall'>{errors.age}</Text>}
@@ -210,11 +226,11 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
                             <View style={{ ...styles.row, flexDirection: "row", width: '100%' }}>
                                 <View style={{ width: '42%', marginRight: '8%' }}>
                                     <TextInput style={{ ...styles.input }}
+                                        textColor = {theme.colors.primaryText}
                                         onFocus = {openDatePicker}
                                         editable={true}
                                         value = {values.dob}
-                                        label="D.O.B"
-                                        mode="outlined"
+                                        label={<Text style={styles.text_small}>D.O.B</Text>}
                                         disabled={editMode == true ? false : true}
                                     ></TextInput>
                                     <DatePickerModal
@@ -234,7 +250,10 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
                                 <View style={{ width: '42%', marginLeft: '8%' }}>
                                     <MemoInputComponent disabled={editMode} 
                                                         name ={"city"} 
-                                                        label="City"
+                                                        label="City" 
+                                                        styles={styles.input}  
+                                                        textColor={styles.text_medium.color}
+                                                        labeltextstyles={styles.text_small}
                                                         />
                                     {errors.city && <Text style={{ ...styles.error }} variant='bodySmall'>{errors.city}</Text>}
                                 </View>
@@ -242,27 +261,25 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
 
                             {userDetails && userDetails.userRole == "doctor" &&
                                 <View style={{ ...styles.doctorView }}>
-                                    <Text>Doctor Info</Text>
+                                    <Text style={styles.text_small}>Doctor Info</Text>
                                     <View style={{ ...styles.row }}>
                                         <TextInput style={{ ...styles.input, marginBottom: 10 }}
                                             value={userDetails.certificationName}
                                             label="Certification"
-                                            mode="outlined"
                                             disabled
                                         ></TextInput>
 
                                         <TextInput style={{ ...styles.input, marginTop: 10, marginBottom: 10 }}
                                             value={userDetails.instituteName}
                                             label="Institue Name"
-                                            mode="outlined"
                                             disabled
                                         ></TextInput>
                                     </View>
                                 </View>
                             }
 
-                            <View style={{ ...styles.row, paddingTop: 20 }}>
-                                <Text variant='bodyLarge' style={{ color: editMode ? "black" : "grey" }}>About Me</Text>
+                            <View style={{ ...styles.row, paddblackingTop: 20 }}>
+                                <Text  style={{ ...styles.text_medium }}>About Me</Text>
                                 <TextInput style={{ ...styles.multiline_input }}
                                     onChangeText={handleChange('about')}
                                     value={values.about}
@@ -272,11 +289,11 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
                                     numberOfLines={4}
                                     disabled={editMode == true ? false : true}
                                 ></TextInput>
-                                {errors.about && <Text style={{ ...styles.error }} variant='bodySmall'>{errors.about}</Text>}
+                                {errors.about && <Text style={{ ...styles.error, ...styles.text_small }} variant='bodySmall'>{errors.about}</Text>}
                             </View>
 
                             {editMode == 1 &&
-                                <Button onPress={handleSubmit} style={{ ...styles.button }} mode='contained'>
+                                <Button buttonColor={theme.colors.primaryButton} onPress={handleSubmit} style={{ ...styles.button }} mode='contained'>
                                     Save Changes
                                 </Button>}
 
@@ -292,12 +309,13 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
 export default React.memo(ProfileView);
 
 
-const styles = StyleSheet.create({
+const createStyles = ({colors}) => StyleSheet.create({
     root: {
         flex: 1,
         paddingTop: 10,
         paddingRight: 25,
         paddingLeft: 25,
+        backgroundColor: colors.primaryContainer
     },
     centerX: {
         marginLeft: 'auto',
@@ -315,13 +333,13 @@ const styles = StyleSheet.create({
         includeFontPadding: false,
         padding: 0,
         margin: 0,
-        backgroundColor: "white",
+        backgroundColor: colors.secondaryContainer,
         color: 'gray'
     },
     multiline_input: {
         height: 150,
         maxHeight: 180,
-        backgroundColor: "white",
+        backgroundColor: colors.secondaryContainer,
         color: 'gray'
     },
     fab: {
@@ -334,7 +352,7 @@ const styles = StyleSheet.create({
     button: {
         marginTop: 10,
         marginBottom: 20,
-        borderRadius: 5
+        borderRadius: 5,
     },
     doctorView: {
         borderTopWidth: 1,
@@ -344,5 +362,17 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 20,
         opacity: 0.5
-    }
+    },
+    heading: {
+        color: colors.primaryText,
+        fontSize:20
+    },
+    text_medium : {
+        color: colors.primaryText,
+        fontSize:16
+    },
+    text_small : {
+        color: colors.primaryText,
+        fontSize:14
+    },
 })

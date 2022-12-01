@@ -2,19 +2,19 @@ import { View ,Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollVi
 import { Avatar, Button, Card, Title, Paragraph, useTheme, FAB, IconButton, Text  } from 'react-native-paper';
 import React , {useState, useContext, useEffect} from 'react'
 import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
-import { SERVER_IP, SERVER_PORT } from '../../config';
-import authContext from '../../src/context';
+import { authContext, themeContext } from '../../src/context';
 
 
 const MedicalHistoryView = ({userHistory, deleteRecord}) => {
     let isAlertActive = 0;
     const { auth } = useContext(authContext);
+    const { theme } = useContext(themeContext);
+    const styles = createStyles(theme);
     const navigation = useNavigation();
-    const theme = useTheme();
+  
 
-    const LeftContent = props => <Avatar.Icon {...props} icon="needle" />
-    const RightContent = props => <View marginRight="auto"><IconButton iconColor='#768207' icon="trash-can" onPress={() => handleDelete(props)}/></View>
+    const LeftContent = props => <Avatar.Icon {...props} iconColor="white" style={{backgroundColor:theme.colors.primary}} icon="needle" />
+    const RightContent = props => <View marginRight="auto"><IconButton iconColor={theme.colors.primaryIcon} icon="trash-can" onPress={() => handleDelete(props)}/></View>
 
     const showAlert = (props) => {
       isAlertActive = 1;
@@ -41,6 +41,7 @@ const MedicalHistoryView = ({userHistory, deleteRecord}) => {
     return (  
         <>
         <FAB
+          color='white'
           icon = "plus"
           style={{...styles.fab, backgroundColor: theme.colors.secondary}}   
           onPress= {() => navigation.navigate("MedicalHistory", {operation : "add"})}
@@ -48,16 +49,17 @@ const MedicalHistoryView = ({userHistory, deleteRecord}) => {
         {userHistory.length >= 1 ? <View style = {styles.root}>
           <ScrollView>
           {Object.keys(userHistory).map((key, index) => 
-              <Card key = {index} elevation={1} style = {{...styles.card, borderWidth:1, borderColor:"#007fff"}}>
-                <Card.Title titleStyle={{fontSize:20, minHeight:'auto'}} 
+              <Card key = {index} elevation={1} style = {{...styles.card, borderWidth:1, borderColor: theme.colors.primary}}>
+                <Card.Title titleStyle={{fontSize:20, minHeight:'auto', ...styles.heading}} 
+                            subtitleStyle={{...styles.text_small}}
                             title={userHistory[key].ailmentName} subtitle={userHistory[key].startDate.split('T')[0] + " to " + (userHistory[key].endDate.length > 0 ? userHistory[key].endDate.split('T')[0] : "")}
                             left={LeftContent} right={() => RightContent(userHistory[key].recordId)}/>
                 <Card.Content>
-                  <Paragraph><Text>Symptoms: </Text>{userHistory[key].symptoms}</Paragraph>
-                  <Paragraph>{userHistory[key].description}</Paragraph>
+                  <Paragraph style={{...styles.text_small}}><Text  style={{...styles.text_medium}}>Symptoms: </Text>{userHistory[key].symptoms}</Paragraph>
+                  <Paragraph style={{...styles.text_small}}>{userHistory[key].description}</Paragraph>
                 </Card.Content>
                 <Card.Actions>
-                  <Button onPress={() => navigation.navigate("MedicalHistory", {operation : "edit", recordDetails: userHistory[key]})} mode="text" textColor={theme.colors.primary}>Edit</Button>
+                  <Button textColor={theme.colors.primaryText} onPress={() => navigation.navigate("MedicalHistory", {operation : "edit", recordDetails: userHistory[key]})} mode="text">Edit</Button>
                 </Card.Actions>
               </Card>       
           )}
@@ -66,7 +68,7 @@ const MedicalHistoryView = ({userHistory, deleteRecord}) => {
           </ScrollView>
         </View> : 
         <View style={styles.root}>
-          <Text style={{...styles.center}}>No Records Found</Text>
+          <Text style={{...styles.center, ...styles.text_medium}}>No Records Found</Text>
         </View>
         }
       </>
@@ -76,9 +78,10 @@ const MedicalHistoryView = ({userHistory, deleteRecord}) => {
 export default MedicalHistoryView;
 
 
-const styles = StyleSheet.create({
+const createStyles = ({colors}) => StyleSheet.create({
   root : {
     flex:1,
+    backgroundColor: colors.primaryContainer
   },
   center : {
     marginLeft : 'auto', 
@@ -96,7 +99,8 @@ const styles = StyleSheet.create({
   card : {
     marginLeft: 5,
     marginRight: 8,
-    marginTop: 10
+    marginTop: 10,
+    backgroundColor: colors.onPrimaryContainer
   },
   fab: {
     position:'absolute',
@@ -111,5 +115,17 @@ const styles = StyleSheet.create({
     borderRadius : 0,
     borderColor : 'transparent',
     borderColor : "white"
-  }
+  },
+  heading: {
+    color: colors.primaryText,
+    fontSize:20
+  },
+  text_medium : {
+      color: colors.primaryText,
+      fontSize:16
+  },
+  text_small : {
+      color: colors.primaryText,
+      fontSize:14
+  },
 })
