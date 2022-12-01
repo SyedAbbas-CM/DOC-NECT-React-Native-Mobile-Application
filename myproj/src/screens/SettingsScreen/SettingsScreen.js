@@ -39,14 +39,25 @@ const SettingsScreen = () => {
           }
         })
         .then((response) => {
-          console.log("fetched settings successfully");
-          console.log(response.data.data)
           setPrivacyLevel(response.data.data[0].privacy)
           setThemeSettings(response.data.data[0].theme)
         })
         .catch((error) => {
-          console.log("settings failed to be retrieved");
-        })
+            if(error.response){
+              switch(error.response.data.errorCode){
+                  case "auth/unauthorized-access":
+                      Alert.alert("Unauthorized Access!", "Unauthorized access has been detected. Please log in again.");
+                      navigation.navigate("SignIn");
+                      break;
+                  default:
+                      console.log(error.response.errorCode);
+                      Alert.alert("Invalid request.", "Your request could not be processed. Please try again later or contact support.");
+                      break;
+              }
+           }
+            else
+              Alert.alert("404", "The server is irresponsive. Please try again later or contact support.");
+          })
     }, [])
 
     function UpdateSettings() {
@@ -65,8 +76,21 @@ const SettingsScreen = () => {
             setTheme(themeSettings)
         })
         .catch((error) => {
-          console.log("settings failed to be retrieved");
-        })
+            if(error.response){
+              switch(error.response.data.errorCode){
+                  case "auth/unauthorized-access":
+                      Alert.alert("Unauthorized Access!", "Unauthorized access has been detected. Please log in again.");
+                      navigation.navigate("SignIn");
+                      break;
+                  default:
+                      console.log(error.response.errorCode);
+                      Alert.alert("Invalid request.", "Your request could not be processed. Please try again later or contact support.");
+                      break;
+              }
+           }
+            else
+              Alert.alert("404", "The server is irresponsive. Please try again later or contact support.");
+          })
     }
 
     return ( 

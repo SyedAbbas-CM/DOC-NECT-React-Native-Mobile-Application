@@ -69,14 +69,14 @@ const ProfileScreen = ({route}) => {
   }
 
     useEffect(() => {
-      userName = targetUserName ? targetUserName.userName : auth.userName;
+      // userName = targetUserName ? targetUserName.userName : auth.userName;
       getUser(userName);
       getHistory(userName);
       getActivity(userName);
     }, [isFocused])
 
   const Profile = useCallback(() => {
-    console.log("Profile Component re-render");
+    // console.log("Profile Component re-render");
     return (
       <ProfileView updateUserDetails={updateUserDetails} profileMode={hideProfile} userDetails={user} toggleProfileMode = {toggleProfileMode} />
     );
@@ -90,7 +90,7 @@ const ProfileScreen = ({route}) => {
   }, [history])
   
   const Activity = useCallback(() => {
-    console.log("Activity Component re-render");
+    // console.log("Activity Component re-render");
     return (
       <ActivityView userActivity = {activty}/>
     );
@@ -126,11 +126,24 @@ const ProfileScreen = ({route}) => {
         }
       })
       .then((response) => {
-        console.log("update Profile success");
+        console.log("Profile updated Successfully");
       })
-      .catch((error) => {
-        console.log("update Profile failed");
-      })
+      .catch(error => {
+        if(error.response){
+            switch(error.response.data.errorCode){
+                case "auth/unauthorized-access":
+                    Alert.alert("Unauthorized Access!", "Unauthorized access has been detected. Please log in again.");
+                    navigation.navigate("SignIn");
+                    break;
+                default:
+                    console.log(error.response.errorCode);
+                    Alert.alert("Invalid request.", "Your request could not be processed. Please try again later or contact support.");
+                    break;
+            }
+        }
+        else
+            Alert.alert("404", "The server is irresponsive. Please try again later or contact support.");
+    });
   }
 
   function deleteRecord(recordId) {
@@ -145,9 +158,22 @@ const ProfileScreen = ({route}) => {
     .then((response) => {
       getHistory();
     })
-    .catch((error) => {
-      console.log("update Profile failed");
-    })
+    .catch(error => {
+      if(error.response){
+          switch(error.response.data.errorCode){
+              case "auth/unauthorized-access":
+                  Alert.alert("Unauthorized Access!", "Unauthorized access has been detected. Please log in again.");
+                  navigation.navigate("SignIn");
+                  break;
+              default:
+                  console.log(error.response.errorCode);
+                  Alert.alert("Invalid request.", "Your request could not be processed. Please try again later or contact support.");
+                  break;
+          }
+      }
+      else
+          Alert.alert("404", "The server is irresponsive. Please try again later or contact support.");
+  });
   }
 
   return (

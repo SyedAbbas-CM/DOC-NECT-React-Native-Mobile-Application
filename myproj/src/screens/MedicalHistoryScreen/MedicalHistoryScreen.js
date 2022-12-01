@@ -100,7 +100,7 @@ const MedicalHistoryScreen = ({ route }) => {
         switch(error.response.data.errorCode){
             case "auth/unauthorized-access":
                 Alert.alert("Unauthorized Access!", "Unauthorized access has been detected. Please log in again.");
-                // navigation.navigate("SignIn");
+                navigation.navigate("SignIn");
                 break;
             default:
                 console.log(error.response.errorCode);
