@@ -7,6 +7,7 @@ import HomeScreen  from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import MedicalHistoryScreen from '../screens/MedicalHistoryScreen';
 import CertificationScreen from '../screens/CertificationScreen';
+import PostCreationScreen from '../screens/PostCreationScreen';
 import PolicyScreen from '../screens/PolicyScreen/PolicyScreen';
 import SettingsScreen from '../screens/SettingsScreen/SettingsScreen';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
@@ -21,6 +22,7 @@ const Navigation = () => {
     Profile : ProfileScreen,
     MedicalHistory: MedicalHistoryScreen,
     Certification : CertificationScreen,
+    PostCreation : PostCreationScreen,
     Policy: PolicyScreen,
     Settings: SettingsScreen
   }
