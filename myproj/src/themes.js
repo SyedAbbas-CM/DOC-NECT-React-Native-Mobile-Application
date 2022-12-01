@@ -17,6 +17,8 @@ export const LightTheme = {
 
       primaryButton: "#1976d2",
       background: "white",
+
+      primaryIcon: "#1976d2",
     },
 };
   
@@ -35,5 +37,7 @@ export const DarkTheme = {
 
       primaryButton: "#616469",
       background: "#23272a",
+
+      primaryIcon: "white"
     },
 };

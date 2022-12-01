@@ -4,7 +4,7 @@ import { Text, TextInput, Button, Title, useTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useFormik } from 'formik';
 import { useContext } from 'react';
-import { authContext } from '../../context';
+import { authContext, themeContext } from '../../context';
 import * as yup from 'yup';
 import axios from 'axios';
 import { SERVER_IP, SERVER_PORT } from '../../../config';
@@ -26,8 +26,9 @@ const schema = yup.object({
 })
 
 const MedicalHistoryScreen = ({ route }) => {
-  const auth = useContext(authContext);
-  const theme = useTheme();
+  const { auth } = useContext(authContext);
+  const { theme } = useContext(themeContext);
+
   const navigation = useNavigation();
   const { operation } = route.params;
   const formik = useFormik({
@@ -88,7 +89,7 @@ const MedicalHistoryScreen = ({ route }) => {
     axios.post(`http://${SERVER_IP}:${SERVER_PORT}/api/addRecord`, newRecord,
     {
       headers: {
-        "authorization": `BEARER ${auth.auth.accessToken}`
+        "authorization": `BEARER ${auth.accessToken}`
       }      
     })
     .then((response) => {
@@ -117,7 +118,7 @@ const MedicalHistoryScreen = ({ route }) => {
     axios.put(`http://${SERVER_IP}:${SERVER_PORT}/api/updateRecord`, updatedRecord,
       {
         headers: {
-          "authorization": `BEARER ${auth.auth.accessToken}`
+          "authorization": `BEARER ${auth.accessToken}`
         }
       })
       .then((response) => {
