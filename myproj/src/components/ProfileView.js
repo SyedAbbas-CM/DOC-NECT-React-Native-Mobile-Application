@@ -51,6 +51,7 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
     let isAlertActive = 0;
 
     const theme = useTheme();
+    const date = new Date();
     const [editMode, setEditMode] = React.useState(profileMode);
     const [showDropDown, setShowDropDown] = useState(false);
     const [datePickerOpen, setDatePickerOpen] = React.useState(false);
@@ -220,10 +221,12 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
                                         locale="en"
                                         mode="single"
                                         visible={datePickerOpen}
-                                        date = {new Date()}
+                                        date = {date}
                                         onDismiss={onDismissDatePicker}
                                         onConfirm={(params) => onConfirmDatePicker(params, setFieldValue)}
                                         saveLabel={<Text style={{color:"white"}}>Save</Text>}
+                                        startYear={1920}
+                                        endYear={2023}
                                         />
                                     {errors.dob && <Text style={{ ...styles.error }} variant='bodySmall'>{errors.dob}</Text>}
                                 </View>

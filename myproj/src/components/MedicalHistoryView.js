@@ -1,41 +1,22 @@
 import { View ,Image, StyleSheet, ImageBackground, useWindowDimensions, ScrollView, Alert } from 'react-native'
 import { Avatar, Button, Card, Title, Paragraph, useTheme, FAB, IconButton, Text  } from 'react-native-paper';
-import React , {useState} from 'react'
+import React , {useState, useContext, useEffect} from 'react'
 import { useNavigation } from '@react-navigation/native';
-
-const records = {
-  0: {
-    name: "I am turning into a Cat",
-    startDate : "2030-2-21",
-    endDate : "2031-2-27",
-    symptoms: "Meow Meow Meow",
-    description: "I am a cat. Meow Desu."
-  },
-  1: {
-    name: "Diabetes",
-    startDate : "2001-4-11",
-    endDate : "2000-6-1",
-    symptoms: "Looking at a Photo of Abbas with his hair down.",
-    description: "Have attempted self-treatment by performing an excorcism and cleansing of the soul."
-  },
-  2: {
-    name: "Head pain",
-    startDate : "2011-4-11",
-    endDate : "2012-1-1",
-    symptoms: "Problems began due to listening to my friends babble about retarded shit all the time. I am recovered now because I am home.",
-    description: "Constant headaches and butt pains. Feel really tired and sleepy"
-  }
-}
+import axios from 'axios';
+import { SERVER_IP, SERVER_PORT } from '../../config';
+import authContext from '../../src/context';
 
 
-const MedicalHistoryView = ({userHistory}) => {
+const MedicalHistoryView = ({userHistory, deleteRecord}) => {
     let isAlertActive = 0;
-    const navigation = useNavigation()
+    const { auth } = useContext(authContext);
+    const navigation = useNavigation();
     const theme = useTheme();
-    const LeftContent = props => <Avatar.Icon {...props} icon="needle" />
-    const RightContent = props => <View marginRight="auto"><IconButton iconColor='#768207' icon="trash-can" onPress={() => deleteRecord(props)}/></View>
 
-    const showAlert = () => {
+    const LeftContent = props => <Avatar.Icon {...props} icon="needle" />
+    const RightContent = props => <View marginRight="auto"><IconButton iconColor='#768207' icon="trash-can" onPress={() => handleDelete(props)}/></View>
+
+    const showAlert = (props) => {
       isAlertActive = 1;
       Alert.alert(
           "Confirmation",
@@ -45,19 +26,16 @@ const MedicalHistoryView = ({userHistory}) => {
               text: "No",
               onPress: () => console.log("exit dialog"),
             },
-            { text: "Yes", onPress: _deleteRecord }
+            { text: "Yes", onPress: () => deleteRecord(props) }
           ]       
     ), isAlertActive = 0;}
 
-    const deleteRecord = (props) => {
+    const handleDelete = (props) => {
+      console.log(props);
       if (isAlertActive == 0) 
-          showAlert()
+          showAlert(props)
       else 
-          _deleteRecord
-  }
-
-  const _deleteRecord = () => {
-    console.log("delete that shit");
+          deleteRecord(props);
   }
 
     return (  
@@ -73,7 +51,7 @@ const MedicalHistoryView = ({userHistory}) => {
               <Card key = {index} elevation={1} style = {{...styles.card, borderWidth:1, borderColor:"#007fff"}}>
                 <Card.Title titleStyle={{fontSize:20, minHeight:'auto'}} 
                             title={userHistory[key].ailmentName} subtitle={userHistory[key].startDate.split('T')[0] + " to " + (userHistory[key].endDate.length > 0 ? userHistory[key].endDate.split('T')[0] : "")}
-                            left={LeftContent} right={RightContent}/>
+                            left={LeftContent} right={() => RightContent(userHistory[key].recordId)}/>
                 <Card.Content>
                   <Paragraph><Text>Symptoms: </Text>{userHistory[key].symptoms}</Paragraph>
                   <Paragraph>{userHistory[key].description}</Paragraph>
