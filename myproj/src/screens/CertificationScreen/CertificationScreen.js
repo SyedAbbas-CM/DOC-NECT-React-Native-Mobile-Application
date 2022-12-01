@@ -4,7 +4,7 @@ import React from "react";
 import { Alert } from "react-native";
 import { SERVER_IP, SERVER_PORT } from "../../../config";
 import { CertificationForm } from "../../components/CertificationForm";
-import authContext from '../../context';
+import { authContext } from '../../context';
 
 export default CertificationScreen = () => {
     const navigation = useNavigation();

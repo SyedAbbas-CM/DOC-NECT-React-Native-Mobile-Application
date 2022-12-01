@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { globalStyles, WrapWithKeyboardDismiss } from '../../global';
-
 import RegisterUser from '../../components/RegisterUser';
 import RegisterSelect from '../../components/RegisterSelect';
 import axios from 'axios';
 import { Alert } from 'react-native';
 import { SERVER_IP, SERVER_PORT } from '../../../config';
-import authContext from '../../context';
+import { authContext } from '../../context';
+
 const Register = () => {
   const { setAuth } = React.useContext(authContext);
   const navigation = useNavigation();

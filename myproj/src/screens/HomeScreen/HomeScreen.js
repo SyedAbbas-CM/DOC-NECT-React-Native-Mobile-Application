@@ -9,7 +9,7 @@ const HomeScreen = () => {
     <>
       <View style={{ flex: 1 }}>
         <ScrollView>
-          {Array.from({ length: 20 }, (item, i) => <Text style={{ marginVertical: 10 }}>Hi {i}</Text>)}
+          {Array.from({ length: 20 }, (item, i) => <Text key={i} style={{ marginVertical: 10 }}>Hi {i}</Text>)}
         </ScrollView>
         {/* <Footer /> */}
       </View>

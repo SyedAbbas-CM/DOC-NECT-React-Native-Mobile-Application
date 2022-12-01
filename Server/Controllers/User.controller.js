@@ -135,6 +135,15 @@ const UpdateProfile = (req, res) => {
     });
 }
 
+const UpdateSettings = (req, res) => {
+    User.updateSettings.service({ ...req.body, userName: req.user.userName }, (dbError, data) => {
+        if (dbError) {
+            return res.status(400);
+        }
+        res.status(200).json(data);
+    });
+}
+
 const  SearchActivityByName = asyncWrapper(async(req, res) => {
     User.getActivityByUserName.service(req.params, (dbError, data) => {
         if(dbError){
@@ -148,6 +157,21 @@ const  SearchActivityByName = asyncWrapper(async(req, res) => {
             });
     });
 })
+
+const  SearchSettingsByName = asyncWrapper(async(req, res) => {
+    User.getSettingsByUserName.service({userName : req.user.userName}, (dbError, data) => {
+        if(dbError){
+            res.status(400).json({
+                errorCode : "db/unknown-error",
+            });
+        }
+        else
+            res.status(200).json({
+                data : data
+            });
+    });
+})
+
 
 const   CertifyUser = asyncWrapper(async(req, res) => {
     Certification.certify.service({docUserName : req.user.userName, ...req.body}, (dbError, data) => {
@@ -170,7 +194,9 @@ module.exports = {
         SearchByEmail,
         SearchByName,
         UpdateProfile,
+        UpdateSettings,
         SearchActivityByName,
+        SearchSettingsByName,
         CertifyUser
 }
 

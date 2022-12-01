@@ -3,9 +3,6 @@ const db = require('./../DB');
 
 const User = {};
 User.schema = {
-        userId: {
-            isInt : true,
-        },
         userName : {
             isString : true,
             isLength : {
@@ -64,15 +61,29 @@ User.schema = {
         about : {
             isString : true,
         },
+        joinDate: {
+            isDate: true,
+        },
+        theme: {
+            isString : true,
+            isIn : {
+                options : [['LIGHT', 'DARK']]
+            } 
+        },
+        privacy: {
+            isString : true,
+            isIn : {
+                options : [['0', '1', '2']]
+            } 
+        }
     };
     
 User.createUser = new function(){
     this.params = ["userName", "pass", "userRole", "firstName", "lastName", "email", "dob"];
-    
     this.service = (data, results) => {
         //placeholder ? are injection proof
-        const sql = 'INSERT INTO User(userName, pass, userRole, firstName, lastName, email, dob) values(?, ?, ?, ?, ?, ?, str_to_date(?, \'%Y-%m-%d\'))';
-        db.query(sql, [data.userName,data.pass,data.userRole,data.firstName,data.lastName,data.email, data.dob], (err, data) => {
+        const sql = 'INSERT INTO User(userName, pass, userRole, firstName, lastName, email, dob, theme, privacy) values(?, ?, ?, ?, ?, ?, str_to_date(?, \'%Y-%m-%d\'), ?, ?)';
+        db.query(sql, [data.userName,data.pass,data.userRole,data.firstName,data.lastName,data.email, data.dob, 'LIGHT', '0'], (err, data) => {
             if(err){
                 console.log(err)
             }else{
@@ -84,7 +95,6 @@ User.createUser = new function(){
 };
 
 User.getUserByUserName = new function(){
-
     this.params = ["userName"];
     this.service = (data, results) => {
         console.log(data)
@@ -96,17 +106,14 @@ User.getUserByUserName = new function(){
             else{
 
             }
-            
             results(!err? null : err, data);
         });
     };
 };
 
 User.getUserByEmail = new function(){
-
     this.params = ["email"];
     this.service = (data, results) => {
-        //console.log(data)
         const sql = `SELECT * FROM User WHERE email = ?`;
         db.query(sql, [data.email], (err, data) => {
             results(!err? null : err, data);
@@ -115,7 +122,6 @@ User.getUserByEmail = new function(){
 };
 
 User.getPasswordbyEmail = new function(){
-
     this.params = ["email"];
     this.service = (data, results) => {
         const sql = `SELECT pass FROM User WHERE email = ?`;
@@ -145,8 +151,24 @@ User.updateProfile = new function(){
 User.getActivityByUserName = new function(){
     this.params = ["userName"];
     this.service = (data, results) => {
-        console.log("history", data)
         const sql = `SELECT * FROM POST WHERE userName = ?`;
+        db.query(sql, [data.userName], (err, data) => {
+            if(err){
+                console.log(err)
+            }
+            else{
+
+            }
+            results(!err? null : err, data);
+        });
+    };
+};
+
+
+User.getSettingsByUserName = new function(){
+    this.params = ["userName"];
+    this.service = (data, results) => {
+        const sql = `SELECT theme, privacy FROM USER WHERE userName = ?`;
         db.query(sql, [data.userName], (err, data) => {
             if(err){
                 console.log(err)
@@ -158,6 +180,18 @@ User.getActivityByUserName = new function(){
             results(!err? null : err, data);
         });
     };
+};
+
+
+User.updateSettings = new function(){
+    this.params = ["theme", "privacy"];
+    this.service = (data, results) => {
+        const { userName, ...restData } = data;
+        let sql = "UPDATE User SET " + Object.keys(restData).join(" = ? ,") +" = ? WHERE userName = ?";
+        db.query(sql, [...Object.values(restData), userName], (err, data) => {
+            results(!err ? null : err, data);
+        });
+    }
 };
 
 

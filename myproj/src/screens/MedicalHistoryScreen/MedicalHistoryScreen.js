@@ -4,7 +4,7 @@ import { Text, TextInput, Button, Title, useTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useFormik } from 'formik';
 import { useContext } from 'react';
-import authContext from '../../context';
+import { authContext } from '../../context';
 import * as yup from 'yup';
 import axios from 'axios';
 import { SERVER_IP, SERVER_PORT } from '../../../config';

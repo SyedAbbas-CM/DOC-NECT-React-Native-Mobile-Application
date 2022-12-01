@@ -4,7 +4,7 @@ import React , {useState, useContext, useEffect} from 'react'
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { SERVER_IP, SERVER_PORT } from '../../config';
-import authContext from '../../src/context';
+import { authContext } from '../../src/context';
 
 
 const MedicalHistoryView = ({userHistory, deleteRecord}) => {

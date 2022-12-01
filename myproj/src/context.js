@@ -1,4 +1,5 @@
 import React from 'react'
+import { DarkTheme } from './themes';
 
-const authContext = React.createContext({})
-export default authContext
+export const authContext = React.createContext({});
+export const themeContext = React.createContext({})
