@@ -1,4 +1,4 @@
-import { View, Image, StyleSheet, ScrollView, Alert } from 'react-native'
+import { View, Image, StyleSheet, ScrollView, Alert, Keyboard} from 'react-native'
 import React, { useState, useCallback } from 'react'
 import { Text, TextInput, Button, Title, useTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -8,6 +8,7 @@ import authContext from '../../context';
 import * as yup from 'yup';
 import axios from 'axios';
 import { SERVER_IP, SERVER_PORT } from '../../../config';
+import { DatePickerModal } from 'react-native-paper-dates';
 
 const schema = yup.object({
   ailmentName: yup.string()
@@ -18,7 +19,7 @@ const schema = yup.object({
   endDate: yup.date(),
   symptoms: yup.string()
     .max(300, "Max character limit reached (300)")
-    .min(30, "Please enter more information")
+    .min(20, "Please enter more information")
     .required("Required"),
   description: yup.string()
     .max(1000, "Max character limit reached (1000)")
@@ -34,18 +35,56 @@ const MedicalHistoryScreen = ({ route }) => {
       ailmentName: operation === "edit" ? route.params.recordDetails.ailmentName : "",
       symptoms: operation === "edit" ? route.params.recordDetails.symptoms : "",
       description: operation === "edit" ? route.params.recordDetails.description : "",
-      startDate: operation === "edit" ? route.params.recordDetails.startDate : "",
-      endDate: operation === "edit" ? route.params.recordDetails.endDate : "",
+      startDate: operation === "edit" ? route.params.recordDetails.startDate.split('T')[0] : "",
+      endDate: operation === "edit" ? route.params.recordDetails.endDate.split('T')[0] : "",
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      console.log(values);
-      addRecord(values);
+      if (operation === "edit")
+        updateRecord({recordId: route.params.recordDetails.recordId, ...values,})
+      else if (operation === "add")
+        addRecord(values);
     },
   })
 
+  const [startDatePickerOpen, setStartDatePickerOpen] = React.useState(false);
+  const [endDatePickerOpen, setEndDatePickerOpen] = React.useState(false);
+
+  const openStartDatePicker = () => {
+    Keyboard.dismiss();
+    setStartDatePickerOpen(true);
+  }
+
+  const openEndDatePicker = () => {
+    Keyboard.dismiss();
+    setEndDatePickerOpen(true);
+  }
+
+  const onDismissStartDatePicker = React.useCallback(() => {
+    setStartDatePickerOpen(false);
+  }, [setStartDatePickerOpen]);
+
+  const onConfirmStartDatePicker = React.useCallback(
+    (params, setFieldValue) => {
+      setStartDatePickerOpen(false);
+      setFieldValue("startDate",params.date.toISOString().split('T')[0])
+    },
+    [setStartDatePickerOpen]
+  );
+
+  const onDismissEndDatePicker = React.useCallback(() => {
+    setEndDatePickerOpen(false);
+  }, [setEndDatePickerOpen]);
+
+  const onConfirmEndDatePicker = React.useCallback(
+    (params, setFieldValue) => {
+      setEndDatePickerOpen(false);
+      setFieldValue("endDate",params.date.toISOString().split('T')[0])
+    },
+    [setEndDatePickerOpen]
+  );
+
   function addRecord(newRecord) {
-    console.log("client token: ", auth.auth.accessToken)
     axios.post(`http://${SERVER_IP}:${SERVER_PORT}/api/addRecord`, newRecord,
     {
       headers: {
@@ -53,7 +92,6 @@ const MedicalHistoryScreen = ({ route }) => {
       }      
     })
     .then((response) => {
-      console.log(response);
       navigation.navigate("Profile");
     })
     .catch((error) => {
@@ -72,6 +110,23 @@ const MedicalHistoryScreen = ({ route }) => {
       else
         Alert.alert("404", "The server is irresponsive. Please try again later or contact support.");
     })
+  }
+
+  function updateRecord(updatedRecord) {
+    console.log(updatedRecord)
+    axios.put(`http://${SERVER_IP}:${SERVER_PORT}/api/updateRecord`, updatedRecord,
+      {
+        headers: {
+          "authorization": `BEARER ${auth.auth.accessToken}`
+        }
+      })
+      .then((response) => {
+        console.log(response);
+        navigation.navigate("Profile");
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   }
 
   return (
@@ -99,19 +154,41 @@ const MedicalHistoryScreen = ({ route }) => {
               <Text>Start Date </Text>
               <TextInput style={{ ...styles.input }}
                 dense
+                onFocus = {openStartDatePicker}
                 onChangeText={formik.handleChange('startDate')}
                 value={formik.values.startDate}
               >
               </TextInput>
+              <DatePickerModal
+                locale="en"
+                mode="single"
+                visible={startDatePickerOpen}
+                onDismiss={onDismissStartDatePicker}
+                onConfirm={(params) => onConfirmStartDatePicker(params, formik.setFieldValue)}
+                saveLabel={<Text style={{color:"white"}}>Save</Text>}
+                startYear={1958}
+                endYear={2023}
+                />
             </View>
             <View style={{ width: '50%', paddingLeft: 10 }}>
               <Text>End Date </Text>
               <TextInput style={{ ...styles.input }}
                   dense
+                  onFocus = {openEndDatePicker}
                   onChangeText={formik.handleChange('endDate')}
                   value={formik.values.endDate}
               >
               </TextInput>
+              <DatePickerModal
+                locale="en"
+                mode="single"
+                visible={endDatePickerOpen}
+                onDismiss={onDismissEndDatePicker}
+                onConfirm={(params) => onConfirmEndDatePicker(params, formik.setFieldValue)}
+                saveLabel={<Text style={{color:"white"}}>Save</Text>}
+                startYear={1958}
+                endYear={2023}
+                />
             </View>
           </View>
           <Text variant='bodySmall'>*Leave end date empty if ongoing</Text>

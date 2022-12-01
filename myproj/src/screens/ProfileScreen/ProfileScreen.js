@@ -6,14 +6,16 @@ import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import ProfileView from '../../components/ProfileView';
 import ActivityView from '../../components/ActivityView';
 import MedicalHistoryView from '../../components/MedicalHistoryView';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import points from "../../../assets/points.png"
 import axios from 'axios';
 import authContext from '../../context';
 import { SERVER_IP, SERVER_PORT } from '../../../config';
 
+
 const ProfileScreen = ({userDetails}) => {
   const navigation = useNavigation()
+  const isFocused = useIsFocused();
   const { auth } = useContext(authContext);
   const [hideProfile, setHideProfile] = React.useState(false);
   const [index, setIndex] = React.useState(0);
@@ -28,36 +30,46 @@ const ProfileScreen = ({userDetails}) => {
   const [history, setHistory] = useState(null);
   const [activty, setActivity] = useState(null);
 
+
+  function getUser(userName) {
+    axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getUser/` + userName)
+    .then((response) => {
+      let temp = response.data.data[0];
+      temp["dob"] = temp["dob"].split("T")[0]
+      temp["gender"] = temp["gender"]? temp["gender"].toLowerCase() : null;
+      setUser(temp);
+    })
+    .catch((response) => {
+      console.log(response);
+    })
+  }
+
+  function getHistory() {
+    axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getHistory/` + userName)
+    .then((response) => {
+      setHistory(response.data.data);
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }
+
+  function getActivity() {
+    axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getActivity/` + userName)
+    .then((response) => {
+      setActivity(response.data.data);
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }
+
     useEffect(() => {
       userName = userDetails ? userDetails.userName : auth.userName;
-
-      axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getUser/` + userName)
-        .then((response) => {
-          let temp = response.data.data[0];
-          temp["dob"] = temp["dob"].split("T")[0]
-          temp["gender"] = temp["gender"]? temp["gender"].toLowerCase() : null;
-          setUser(temp);
-        })
-        .catch((response) => {
-          console.log(response);
-        })
-
-      axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getHistory/` + userName)
-        .then((response) => {
-          setHistory(response.data.data);
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-
-      axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getActivity/` + userName)
-        .then((response) => {
-          setActivity(response.data.data);
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-    }, [])
+      getUser(userName);
+      getHistory(userName);
+      getActivity(userName);
+    }, [isFocused])
 
   const Profile = useCallback(() => {
     console.log("Profile Component re-render");
@@ -69,7 +81,7 @@ const ProfileScreen = ({userDetails}) => {
   const MedicalHistory = useCallback(() => {
     console.log("History Component re-render");
     return (
-      <MedicalHistoryView userHistory = {history}/>
+      <MedicalHistoryView deleteRecord={deleteRecord} userHistory = {history}/>
     );
   }, [history])
   
@@ -93,10 +105,7 @@ const ProfileScreen = ({userDetails}) => {
   function updateUserDetails(newUserDetails) {
     setUser({...user, ...newUserDetails});
 
-    axios.put(`http://${SERVER_IP}:${SERVER_PORT}/api/updateProfile`, 
-      {
-        newUserDetails
-      },
+    axios.put(`http://${SERVER_IP}:${SERVER_PORT}/api/updateProfile`, newUserDetails,
       {
         headers: {
           "authorization": `BEARER ${auth.accessToken}`
@@ -110,24 +119,21 @@ const ProfileScreen = ({userDetails}) => {
       })
   }
 
-
-  function updateRecord(updatedRecord) {
-
-    axios.post(`http://${SERVER_IP}:${SERVER_PORT}/api/updateRecord`, 
-      {
-
-      },
-      {
-        headers: {
-          "Authorization": `BEARER ${auth.accessToken}`
-        }
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+  function deleteRecord(recordId) {
+    axios.post(`http://${SERVER_IP}:${SERVER_PORT}/api/deleteRecord`, {
+      recordId: recordId
+    },
+    {
+      headers: {
+        "authorization": `BEARER ${auth.accessToken}`
+      }
+    })
+    .then((response) => {
+      getHistory();
+    })
+    .catch((error) => {
+      console.log("update Profile failed");
+    })
   }
 
   return (

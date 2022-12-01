@@ -46,15 +46,17 @@ const PolicyScreen = () => {
                         <Title style={{fontSize:24}}>Policy</Title>
 
                         <Paragraph style={styles.paragraph}>
-                            Sensitive User Information will remain anonymous and secure. 
-                            Personal information will not be shared with any third-parties.
-                            Anonymous medical information may be shared with relevant third parties
+                            Sensitive User Information will remain anonymous and secure (e.g Medical Records). 
+                            Personal information will not be shared with any third-parties (e.g Names).
+                            Anonymous medical information may be shared with relevant and legitimate third parties.
                         </Paragraph>
                     </View>
                 </View>
-                <Button onPress={goBack}>
-                    Go Back
-                </Button>
+                <View style={{paddingBottom: 30}}> 
+                    <Button onPress={goBack}>
+                        Go Back
+                    </Button>
+                </View>
             </ScrollView>
         </View>
      );

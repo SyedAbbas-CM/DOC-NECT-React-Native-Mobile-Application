@@ -14,7 +14,9 @@ const{
 } = require('../Controllers/User.controller');
 const {
     SearchHistoryByName,
-    addRecord
+    addRecord,
+    deleteRecord,
+    updateRecord
 } = require('../Controllers/History.controller')
 
 
@@ -32,8 +34,8 @@ Router.route('/certify').post(Authenticate, Validate(Certification.schema, Certi
 
 Router.route('/getHistory/:userName').get(Validate(History.schema, History.getHistoryByUserName.params), SearchHistoryByName);
 Router.route('/addRecord').post(Authenticate, Validate(History.schema, History.addRecord.params), addRecord);
-// Router.route('/updateRecord').post(Authenticate, Validate(History.schema, History.certify.params), CertifyUser);
-//Router.route('/deleteRecord').post(Authenticate, Validate(History.schema, History.certify.params), CertifyUser);
-//Router.route('/addRecord').post(Authenticate, Validate(History.schema, History.certify.params), CertifyUser);
+Router.route('/updateRecord').put(Authenticate, Validate(History.schema, History.updateRecord.params), updateRecord);
+Router.route('/deleteRecord').post(Authenticate, Validate(History.schema, History.deleteRecord.params), deleteRecord);
+
 
 module.exports = Router;

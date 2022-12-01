@@ -32,8 +32,39 @@ const addRecord = asyncWrapper(async(req, res) => {
     })
 })
 
+const deleteRecord = asyncWrapper(async(req, res) => {
+    History.deleteRecord.service({recordId: req.body.recordId}, (dbError, data) => {
+        if(dbError){
+            res.status(400).json({
+                errorCode : "db/unknown-error",
+            });
+        }
+        else
+            res.status(200).json({
+                data : data
+            });  
+    })
+})
+
+
+const updateRecord = asyncWrapper(async(req, res) => {
+    History.updateRecord.service(req.body, (dbError, data) => {
+        if(dbError){
+            res.status(400).json({
+                errorCode : "db/unknown-error",
+            });
+        }
+        else
+            res.status(200).json({
+                data : data
+            });  
+    })
+})
+
 
 module.exports = {
     SearchHistoryByName,
-    addRecord
+    addRecord,
+    deleteRecord,
+    updateRecord
 }
