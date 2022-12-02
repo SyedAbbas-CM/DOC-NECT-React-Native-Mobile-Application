@@ -69,7 +69,7 @@ const ProfileScreen = ({route}) => {
   }
 
     useEffect(() => {
-      // userName = targetUserName ? targetUserName.userName : auth.userName;
+      userName = targetUserName ? targetUserName.userName : auth.userName;
       getUser(userName);
       getHistory(userName);
       getActivity(userName);
@@ -83,7 +83,7 @@ const ProfileScreen = ({route}) => {
   }, [hideProfile, user])
   
   const MedicalHistory = useCallback(() => {
-    console.log("History Component re-render");
+    // console.log("History Component re-render");
     return (
       <MedicalHistoryView deleteRecord={deleteRecord} userHistory = {history}/>
     );
@@ -114,7 +114,6 @@ const ProfileScreen = ({route}) => {
     />
   );
 
-  console.log(theme.colors.primary)
 
   function updateUserDetails(newUserDetails) {
     setUser({...user, ...newUserDetails});
@@ -181,8 +180,8 @@ const ProfileScreen = ({route}) => {
           {user && user.userRole.toLowerCase() == "doctor" && hideProfile == false &&
           <View style={styles.fab}>
             <Image source={points}></Image>
-            <View padding={2} left={6} top={34} position="absolute" borderRadius={8}>
-              <Text style={{...styles.centerX}} variant='bodySmall' color="black">100</Text>
+            <View borderRadius={8}>
+              <Text style={{...styles.centerX, ...styles.text_small}} variant='bodySmall' color="black">{user.docPoints}</Text>
             </View>
           </View>}
 

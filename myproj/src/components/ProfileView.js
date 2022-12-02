@@ -50,7 +50,6 @@ function calculate_age(birth_year, birth_month, birth_day)
 
 const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDetails }) => {
     let isAlertActive = 0;
-
     const {theme} = useContext(themeContext);
     const styles = createStyles(theme);
 
@@ -66,7 +65,7 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
     }
 
     useEffect(() => {
-        if (userDetails) {
+        if (userDetails && userDetails.dob) {
             d = userDetails.dob.split('T')[0]
             setAge(calculate_age(d.split('-')[0], d.split('-')[1], d.split('-')[2]).toString())
         }
@@ -259,21 +258,39 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
                                 </View>
                             </View>
 
-                            {userDetails && userDetails.userRole == "doctor" &&
+                            {userDetails && userDetails.userRole == "DOCTOR" &&
                                 <View style={{ ...styles.doctorView }}>
-                                    <Text style={styles.text_small}>Doctor Info</Text>
+                                    <Text style={styles.text_medium}>Certification Details</Text>
                                     <View style={{ ...styles.row }}>
                                         <TextInput style={{ ...styles.input, marginBottom: 10 }}
-                                            value={userDetails.certificationName}
-                                            label="Certification"
+                                            value={userDetails.degreeTitle}
+                                            label={<Text style={styles.text_small}>Certification</Text>}
+                                            textColor = {theme.colors.primaryText}
                                             disabled
                                         ></TextInput>
 
                                         <TextInput style={{ ...styles.input, marginTop: 10, marginBottom: 10 }}
                                             value={userDetails.instituteName}
-                                            label="Institue Name"
+                                            label={<Text style={styles.text_small}>Institute Name</Text>}
+                                            textColor = {theme.colors.primaryText}
                                             disabled
                                         ></TextInput>
+
+                                        <View style={{flexDirection:"row"}}>
+                                            <TextInput style={{ ...styles.input, marginRight: 10, marginTop: 10, marginBottom: 10, width:'50%' }}
+                                                value={userDetails.startDate.split('T')[0]}
+                                                label={<Text style={styles.text_small}>Start Date</Text>}
+                                                textColor = {theme.colors.primaryText}
+                                                disabled
+                                            ></TextInput>
+
+                                            <TextInput style={{ ...styles.input, marginTop: 10, marginLeft: 10, marginBottom: 10, width:'50%' }}
+                                                value={userDetails.endDate.split('T')[0]}
+                                                label={<Text style={styles.text_small}>End Date</Text>}
+                                                textColor = {theme.colors.primaryText}
+                                                disabled
+                                            ></TextInput>
+                                        </View>
                                     </View>
                                 </View>
                             }
@@ -355,13 +372,8 @@ const createStyles = ({colors}) => StyleSheet.create({
         borderRadius: 5,
     },
     doctorView: {
-        borderTopWidth: 1,
-        borderTopColor: "grey",
-        borderBottomWidth: 1,
-        borderBottomColor: "grey",
-        marginTop: 20,
-        marginBottom: 20,
-        opacity: 0.5
+        marginTop: 40,
+        marginBottom: 40,
     },
     heading: {
         color: colors.primaryText,

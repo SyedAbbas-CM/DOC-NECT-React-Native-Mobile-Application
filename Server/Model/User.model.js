@@ -97,19 +97,52 @@ User.createUser = new function(){
 User.getUserByUserName = new function(){
     this.params = ["userName"];
     this.service = (data, results) => {
-        console.log(data)
         const sql = `SELECT * FROM User WHERE userName = ?`;
         db.query(sql, [data.userName], (err, data) => {
             if(err){
                 console.log(err)
             }
-            else{
-
+            else{  
             }
             results(!err? null : err, data);
         });
     };
 };
+
+
+User.getDoctorDetailsByUserName = new function(){
+    this.params = ["userName"];
+    this.service = (data, results) => {
+        const sql = `SELECT * FROM DOCTOR, CERTIFICATION WHERE DOCTOR.userName = CERTIFICATION.userName AND DOCTOR.userName = ?;`;
+        db.query(sql, [data.userName, data.userName], (err, data) => {
+            if(err){
+                console.log(err)
+            }
+            else{  
+                
+            }
+            console.log(data)
+            results(!err? null : err, data);
+        });
+    };
+};
+
+
+User.getCertificationByUserName = new function(){
+    this.params = ["userName"];
+    this.service = (data, results) => {
+        const sql = `SELECT * FROM CERTIFICATION WHERE userName = ?`;
+        db.query(sql, [data.userName], (err, data) => {
+            if(err){
+                console.log(err)
+            }
+            else{  
+            }
+            results(!err? null : err, data);
+        });
+    };
+};
+
 
 User.getUserByEmail = new function(){
     this.params = ["email"];

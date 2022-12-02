@@ -4,7 +4,7 @@ const db = require("../DB");
 const Certification = {};
 
 Certification.schema = {
-    docUserName: {
+    userName: {
         isString: true,
         isLength: {
             options: {
@@ -46,9 +46,9 @@ Certification.certify = new function(){
                    INSERT INTO Doctor(userName) values(?); \
                    INSERT INTO Certification values(?, ?, ?, str_to_date(?, \'%Y-%m-%d\'), str_to_date(?, \'%Y-%m-%d\'));";
         db.query(sql, 
-                [data.docUserName,
-                data.docUserName,
-                data.docUserName,
+                [data.userName,
+                data.userName,
+                data.userName,
                 data.instituteName,
                 data.degreeTitle,
                 data.startDate,

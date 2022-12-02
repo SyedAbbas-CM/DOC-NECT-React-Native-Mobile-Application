@@ -64,16 +64,32 @@ const Register = asyncWrapper(async (req, res, next) => {
     });
 })
 const SearchByName = asyncWrapper(async (req, res) => {
-    User.getUserByUserName.service(req.params, (dbError, data) => {
+    User.getUserByUserName.service(req.params, (dbError, data1) => {
         if (dbError) {
             res.status(400).json({
                 errorCode: "db/unknown-error",
             });
         }
         else
-            res.status(200).json({
-                data: data
-            });
+            if (data1[0].userRole === "DOCTOR") {
+                User.getDoctorDetailsByUserName.service(req.params, (dbError, data2) => {
+                    if (dbError) {
+                        res.status(400).json({
+                            errorCode: "db/unknown-error",
+                        });
+                    }
+                    else {
+                        res.status(200).json({
+                            data : [{...data1[0], ...data2[0]}]
+                        });
+                    }
+                })
+            }
+            else {
+                res.status(200).json({
+                    data : data1
+                });
+            }
     });
 })
 const SearchByEmail = (req, res) => {
@@ -174,7 +190,7 @@ const  SearchSettingsByName = asyncWrapper(async(req, res) => {
 
 
 const   CertifyUser = asyncWrapper(async(req, res) => {
-    Certification.certify.service({docUserName : req.user.userName, ...req.body}, (dbError, data) => {
+    Certification.certify.service({userName : req.user.userName, ...req.body}, (dbError, data) => {
         if(dbError){
             console.log(dbError);
             res.status(400).json({
