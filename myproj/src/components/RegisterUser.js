@@ -108,6 +108,8 @@ const RegisterUser = ({ results }) => {
                             onDismiss={() => setdateOpen(false)}
                             onConfirm={(params) => onConfirmDatePicker(params, setFieldValue)}
                             saveLabel={<Text style={{ color: "white" }}>Save</Text>}
+                            startYear={1920}
+                            endYear={2023}
                         />
                     </View>
                 )}

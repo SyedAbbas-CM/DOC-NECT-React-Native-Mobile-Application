@@ -74,6 +74,8 @@ export const CertificationForm = ({ results }) => {
                             onDismiss={() => setdateOpen("")}
                             onConfirm={(params) => onConfirmDatePicker(params, setFieldValue)}
                             saveLabel={<Text style={{ color: "white" }}>Save</Text>}
+                            startYear={1920}
+                            endYear={2023}
                         />
                     </View>
                 )}
