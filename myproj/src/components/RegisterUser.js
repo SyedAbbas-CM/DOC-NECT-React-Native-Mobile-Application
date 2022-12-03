@@ -6,7 +6,7 @@ import { Text, TextInput, Button, HelperText, Checkbox } from 'react-native-pape
 import { globalStyles } from '../global';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { useNavigation } from '@react-navigation/native';
-
+import { calculate_age } from './utils/UtilFunctions';
 const RegisterUser = ({ results }) => {
     const navigation = useNavigation();
     const [agree, setagree] = React.useState(false);
@@ -16,7 +16,7 @@ const RegisterUser = ({ results }) => {
         firstName: yup.string().min(3, "The minimum length is 3.").required("Required"),
         lastName: yup.string().min(3, "The minimum length is 3.").required("Required"),
         email: yup.string().email("Invalid email").required("Required"),
-        dob: yup.string().required("Required"),
+        dob: yup.string().required("Required").test("dob", "The minimum age is 13.", (value) => calculate_age(...value.split('-')) >= 13),
         password: yup.string().min(4, "The minimum length is 4.").required("Required"),
         confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required("Required")
     });

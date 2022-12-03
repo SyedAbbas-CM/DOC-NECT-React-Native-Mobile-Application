@@ -7,6 +7,7 @@ import * as yup from 'yup';
 import { MemoInputComponent } from './utils/MemoInputField';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { themeContext } from '../context';
+import { calculate_age } from './utils/UtilFunctions';
 
 const schema = yup.object({
     firstName: yup.string()
@@ -28,26 +29,6 @@ const schema = yup.object({
         .max(1000)
 })
 
-
-function calculate_age(birth_year, birth_month, birth_day)
-{
-    today_date = new Date();
-    today_year = today_date.getFullYear();
-    today_month = today_date.getMonth();
-    today_day = today_date.getDate();
-    age = today_year - birth_year;
-
-    if ( today_month < (birth_month - 1))
-    {
-        age--;
-    }
-    if (((birth_month - 1) == today_month) && (today_day < birth_day))
-    {
-        age--;
-    }
-    return age;
-}
-
 const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDetails }) => {
     let isAlertActive = 0;
     const {theme} = useContext(themeContext);
@@ -66,8 +47,8 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
 
     useEffect(() => {
         if (userDetails && userDetails.dob) {
-            d = userDetails.dob.split('T')[0]
-            setAge(calculate_age(d.split('-')[0], d.split('-')[1], d.split('-')[2]).toString())
+            const [year, month, day] = userDetails.dob.split('T')[0].split('-');
+            setAge(calculate_age(year, month, day).toString());
         }
     }, [])
 
@@ -230,7 +211,7 @@ const ProfileView = ({ toggleProfileMode, userDetails, profileMode, updateUserDe
                                         editable={true}
                                         value = {values.dob}
                                         label={<Text style={styles.text_small}>D.O.B</Text>}
-                                        disabled={editMode == true ? false : true}
+                                        disabled
                                     ></TextInput>
                                     <DatePickerModal
                                         locale="en"

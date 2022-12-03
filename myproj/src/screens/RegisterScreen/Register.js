@@ -7,6 +7,7 @@ import axios from 'axios';
 import { Alert } from 'react-native';
 import { SERVER_IP, SERVER_PORT } from '../../../config';
 import { authContext } from '../../context';
+import { StackActions } from '@react-navigation/native';
 
 const Register = () => {
   const { setAuth } = React.useContext(authContext);
@@ -17,21 +18,25 @@ const Register = () => {
     axios.post(
       `http://${SERVER_IP}:${SERVER_PORT}/api/register`,
       {
-        userName: formData.userName,
+        userName: formData.userName.trim(),
         firstName: formData.firstName,
         userRole: "USER",
         lastName: formData.lastName,
-        email: formData.email,
+        email: formData.email.trim(),
         dob: formData.dob,
         pass: formData.password
       },
       {timeout : 5000})
       .then(response => {
         setAuth({...response.data.data[0], accessToken : response.data.accessToken});
-        if (choice === "doctor") navigation.navigate("Certification");
-        else {
-          navigation.navigate("HomeScreen");
-        }
+        if (choice === "doctor")          
+          navigation.dispatch(
+            StackActions.replace('Certification')
+          );
+        else 
+          navigation.dispatch(
+            StackActions.replace('HomeScreen')
+          );
       })
       .catch(error => {
         if(error.response){
@@ -53,14 +58,6 @@ const Register = () => {
       });
 
   }
-  const onSubmitCertificationForm = (formData) => {
-    // axios.post().then(
-    // if( successful)
-    //   navigation.navigate("HomeScreen");
-    // )
-    // console.log(formData);
-  }
-
   return (
     choice === null ?    
       <RegisterSelect onSelect={(ch) => setchoice(ch)} />

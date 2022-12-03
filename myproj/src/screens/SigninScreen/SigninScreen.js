@@ -12,35 +12,38 @@ import { useIsFocused } from "@react-navigation/native";
 
 const SigninScreen = () => {
   const { setAuth } = useContext(authContext);
-  const { setTheme} = useContext(themeContext);
+  const { setTheme } = useContext(themeContext);
   const { height } = useWindowDimensions();
   const navigation = useNavigation();
 
   const isFocused = useIsFocused();
   React.useEffect(() => {
-      // Call only when screen open or when back on screen 
-      if(isFocused){ 
-        setAuth(null);
-      }
+    // Call only when screen open or when back on screen 
+    if (isFocused) {
+      setAuth(null);
+    }
   }, [isFocused]);
 
   const onSignIn = (formData) => {
     axios.post(
-      `http://${SERVER_IP}:${SERVER_PORT}/api/signIn`, 
+      `http://${SERVER_IP}:${SERVER_PORT}/api/signIn`,
       {
-        userName : formData.userName,
-        pass : formData.password
-      }, 
-      {timeout : 5000})
+        userName: formData.userName.trim(),
+        pass: formData.password
+      },
+      { timeout: 5000 })
       .then((response) => {
-        const authObject = {...response.data.data[0], accessToken : response.data.accessToken};
+        const authObject = { ...response.data.data[0], accessToken: response.data.accessToken };
         setAuth(authObject);
         setTheme(response.data.data[0].theme)
-        navigation.navigate("HomeScreen");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'HomeScreen' }]
+        });
       })
-      .catch( error => {
-        if(error.response){
-          switch(error.response.data.errorCode){
+      .catch(error => {
+        if (error.response) {
+          switch (error.response.data.errorCode) {
             case "auth/invalid-username-password":
               Alert.alert("Invalid Credentials", "The username or email is incorrect.");
               break;
@@ -49,14 +52,14 @@ const SigninScreen = () => {
               break;
           }
         }
-        else 
+        else
           Alert.alert("404", "The server is irresponsive. Please try again later or contact support.");
       });
   }
 
   const onForgetPassword = () => {
   }
-  
+
   return (
     // <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     <View style={globalStyles.root}>
@@ -72,7 +75,7 @@ const SigninScreen = () => {
         DocNet
       </Text>
 
-      <SigninForm results={onSignIn}/>
+      <SigninForm results={onSignIn} />
       <Button
         mode="outlined"
         onPress={onForgetPassword}

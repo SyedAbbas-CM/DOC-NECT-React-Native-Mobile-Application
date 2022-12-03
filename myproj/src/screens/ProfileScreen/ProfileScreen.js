@@ -36,7 +36,7 @@ const ProfileScreen = ({route}) => {
 
 
   function getUser(userName) {
-    axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getUser/` + userName)
+    axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getUser/` + userName, {timeout : 5000})
     .then((response) => {
       let temp = response.data.data[0];
       temp["dob"] = temp["dob"].split("T")[0]
@@ -44,27 +44,42 @@ const ProfileScreen = ({route}) => {
       setUser(temp);
     })
     .catch((response) => {
-      console.log(response);
+      if(error.response){        
+        console.log(error.response.errorCode);
+        Alert.alert("Invalid request.", "Your request could not be processed. Please try again later or contact support.");
+      }
+      else
+          Alert.alert("404", "The server is irresponsive. Please try again later or contact support.");
     })
   }
 
   function getHistory() {
-    axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getHistory/` + userName)
+    axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getHistory/` + userName, {timeout : 5000})
     .then((response) => {
       setHistory(response.data.data);
     })
     .catch((error) => {
-      console.log(error)
+      if(error.response){        
+        console.log(error.response.errorCode);
+        Alert.alert("Invalid request.", "Your request could not be processed. Please try again later or contact support.");
+      }
+      else
+          Alert.alert("404", "The server is irresponsive. Please try again later or contact support.");
     })
   }
 
   function getActivity() {
-    axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getActivity/` + userName)
+    axios.get(`http://${SERVER_IP}:${SERVER_PORT}/api/getActivity/` + userName, {timeout : 5000})
     .then((response) => {
       setActivity(response.data.data);
     })
     .catch((error) => {
-      console.log(error)
+      if(error.response){        
+        console.log(error.response.errorCode);
+        Alert.alert("Invalid request.", "Your request could not be processed. Please try again later or contact support.");
+      }
+      else
+          Alert.alert("404", "The server is irresponsive. Please try again later or contact support.");
     })
   }
 
@@ -122,7 +137,8 @@ const ProfileScreen = ({route}) => {
       {
         headers: {
           "authorization": `BEARER ${auth.accessToken}`
-        }
+        },
+        timeout : 5000,
       })
       .then((response) => {
         console.log("Profile updated Successfully");
@@ -152,7 +168,8 @@ const ProfileScreen = ({route}) => {
     {
       headers: {
         "authorization": `BEARER ${auth.accessToken}`
-      }
+      },
+      timeout : 5000
     })
     .then((response) => {
       getHistory();
