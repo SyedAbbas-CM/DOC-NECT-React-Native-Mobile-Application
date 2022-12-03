@@ -25,7 +25,7 @@ CREATE TABLE Doctor(
 );
 
 CREATE TABLE Certification(
-    docUserName    VARCHAR(255),
+    userName    VARCHAR(255),
     instituteName  VARCHAR(255),
 	degreeTitle    VARCHAR(255),
     startDate 	   DATE,
