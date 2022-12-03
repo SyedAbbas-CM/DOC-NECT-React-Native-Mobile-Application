@@ -52,7 +52,7 @@ const MedicalHistoryView = ({userHistory, deleteRecord}) => {
               <Card key = {index} elevation={1} style = {{...styles.card, borderWidth:1, borderColor: theme.colors.primary}}>
                 <Card.Title titleStyle={{fontSize:20, minHeight:'auto', ...styles.heading}} 
                             subtitleStyle={{...styles.text_small}}
-                            title={userHistory[key].ailmentName} subtitle={userHistory[key].startDate.split('T')[0] + " to " + (userHistory[key].endDate.length > 0 ? userHistory[key].endDate.split('T')[0] : "")}
+                            title={userHistory[key].ailmentName} subtitle={(userHistory[key].startDate ? userHistory[key].startDate.split('T')[0] : "???") + " to " + (userHistory[key].endDate ? userHistory[key].endDate.split('T')[0] : "???")}
                             left={LeftContent} right={() => RightContent(userHistory[key].recordId)}/>
                 <Card.Content>
                   <Paragraph style={{...styles.text_small}}><Text  style={{...styles.text_medium}}>Symptoms: </Text>{userHistory[key].symptoms}</Paragraph>

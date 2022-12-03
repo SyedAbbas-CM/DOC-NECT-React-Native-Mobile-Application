@@ -28,6 +28,7 @@ const schema = yup.object({
 const MedicalHistoryScreen = ({ route }) => {
   const { auth } = useContext(authContext);
   const { theme } = useContext(themeContext);
+  const styles = createStyles(theme);
 
   const navigation = useNavigation();
   const { operation } = route.params;
@@ -67,8 +68,10 @@ const MedicalHistoryScreen = ({ route }) => {
 
   const onConfirmStartDatePicker = React.useCallback(
     (params, setFieldValue) => {
-      setStartDatePickerOpen(false);
-      setFieldValue("startDate",params.date.toISOString().split('T')[0])
+      if (params.date) {
+        setStartDatePickerOpen(false);
+        setFieldValue("startDate",params.date.toISOString().split('T')[0])
+      }
     },
     [setStartDatePickerOpen]
   );
@@ -79,8 +82,10 @@ const MedicalHistoryScreen = ({ route }) => {
 
   const onConfirmEndDatePicker = React.useCallback(
     (params, setFieldValue) => {
-      setEndDatePickerOpen(false);
-      setFieldValue("endDate",params.date.toISOString().split('T')[0])
+      if (params.date) {
+        setEndDatePickerOpen(false);
+        setFieldValue("endDate",params.date.toISOString().split('T')[0])
+      }
     },
     [setEndDatePickerOpen]
   );
@@ -114,7 +119,6 @@ const MedicalHistoryScreen = ({ route }) => {
   }
 
   function updateRecord(updatedRecord) {
-    console.log(updatedRecord)
     axios.put(`http://${SERVER_IP}:${SERVER_PORT}/api/updateRecord`, updatedRecord,
       {
         headers: {
@@ -122,7 +126,6 @@ const MedicalHistoryScreen = ({ route }) => {
         }
       })
       .then((response) => {
-        console.log(response);
         navigation.navigate("Profile");
       })
       .catch((error) => {
@@ -132,91 +135,105 @@ const MedicalHistoryScreen = ({ route }) => {
 
   return (
     <View style={{ ...styles.root }}>
-      <View style={{ ...styles.row, ...styles.custom_card, backgroundColor: theme.colors.primary }}>
-        {operation === "add" ? <Title style={{ ...styles.centerX, color: "white" }}>Add Record</Title> :
-          <Title style={{ ...styles.centerX, color: "white" }}>Update Record</Title>}
-      </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-
-        <View style={{ ...styles.row, ...styles.custom_card }}>
-          <Text variant='bodyLarge'>Title </Text>
-          <TextInput style={{ ...styles.input }}
-            dense
-            onChangeText={formik.handleChange('ailmentName')}
-            value={formik.values.ailmentName}
-          >
-          </TextInput>
+        <View style={{ backgroundColor: theme.colors.secondary, paddingTop: 10,  paddingBottom:10}}>
+          {operation === "add" ? <Title style={{ ...styles.centerX }}>Add New Record</Title> :
+            <Title style={{ ...styles.centerX, color: "white" }}>Update Record</Title>}
         </View>
 
-        <View style={{ ...styles.row, ...styles.custom_card }}>
-          <Text variant="bodyLarge" style={{ paddingBottom: 5 }}>Current Status </Text>
-          <View style={{ width: '100%', flexDirection: 'row' }}>
-            <View style={{ width: '50%', paddingRight: 10 }}>
-              <Text>Start Date </Text>
-              <TextInput style={{ ...styles.input }}
-                dense
-                onFocus = {openStartDatePicker}
-                onChangeText={formik.handleChange('startDate')}
-                value={formik.values.startDate}
-              >
-              </TextInput>
-              <DatePickerModal
-                locale="en"
-                mode="single"
-                visible={startDatePickerOpen}
-                onDismiss={onDismissStartDatePicker}
-                onConfirm={(params) => onConfirmStartDatePicker(params, formik.setFieldValue)}
-                saveLabel={<Text style={{color:"white"}}>Save</Text>}
-                startYear={1958}
-                endYear={2023}
-                />
-            </View>
-            <View style={{ width: '50%', paddingLeft: 10 }}>
-              <Text>End Date </Text>
-              <TextInput style={{ ...styles.input }}
-                  dense
-                  onFocus = {openEndDatePicker}
-                  onChangeText={formik.handleChange('endDate')}
-                  value={formik.values.endDate}
-              >
-              </TextInput>
-              <DatePickerModal
-                locale="en"
-                mode="single"
-                visible={endDatePickerOpen}
-                onDismiss={onDismissEndDatePicker}
-                onConfirm={(params) => onConfirmEndDatePicker(params, formik.setFieldValue)}
-                saveLabel={<Text style={{color:"white"}}>Save</Text>}
-                startYear={1958}
-                endYear={2023}
-                />
-            </View>
+        <View style ={{ marginTop: 5,
+                        paddingBottom: 15,
+                        paddingRight: 10,
+                        paddingLeft: 10}}>
+                          
+          <View style={{ ...styles.row, ...styles.custom_card }}>
+            <Text style={{...styles.text_medium}}>Title </Text>
+            <TextInput style={{ ...styles.input }}
+              backgroundColor="white"
+              dense
+              onChangeText={formik.handleChange('ailmentName')}
+              value={formik.values.ailmentName}
+            >
+            </TextInput>
+            {formik.errors.ailmentName && <Text style={{ ...styles.error }} variant='bodySmall'>{formik.errors.ailmentName}</Text>}
           </View>
-          <Text variant='bodySmall'>*Leave end date empty if ongoing</Text>
-        </View>
 
-        <View style={{ ...styles.row, ...styles.custom_card }}>
-          <Text variant="bodyLarge">Symptoms </Text>
-          <TextInput numberOfLines={4} multiline style={{ ...styles.input }}
-              dense
-              onChangeText={formik.handleChange('symptoms')}
-              value={formik.values.symptoms}
-          >
-          </TextInput>
-        </View>
+          <View style={{ ...styles.row, ...styles.custom_card }}>
+            <Text variant="bodyLarge" style={{ paddingBottom: 10 }}>Current Status </Text>
+            <View style={{ width: '100%', flexDirection: 'row' }}>
+              <View style={{ width: '50%', paddingRight: 10 }}>
+                <Text style={{...styles.text_small}}>Start Date </Text>
+                <TextInput style={{ ...styles.input }}
+                  backgroundColor="white"
+                  dense
+                  onFocus = {openStartDatePicker}
+                  onChangeText={formik.handleChange('startDate')}
+                  value={formik.values.startDate}
+                >
+                </TextInput>
+                {formik.errors.startDate && <Text style={{ ...styles.error }} variant='bodySmall'>{formik.errors.startDate}</Text>}
+                <DatePickerModal
+                  locale="en"
+                  mode="single"
+                  visible={startDatePickerOpen}
+                  onDismiss={onDismissStartDatePicker}
+                  onConfirm={(params) => onConfirmStartDatePicker(params, formik.setFieldValue)}
+                  saveLabel={<Text style={{color:"white"}}>Save</Text>}
+                  startYear={1958}
+                  endYear={2023}
+                  />
+              </View>
+              <View style={{ width: '50%', paddingLeft: 10 }}>
+                <Text style={{...styles.text_small}}>End Date </Text>
+                <TextInput style={{ ...styles.input }}
+                    backgroundColor="white"
+                    dense
+                    onFocus = {openEndDatePicker}
+                    onChangeText={formik.handleChange('endDate')}
+                    value={formik.values.endDate}
+                >
+                </TextInput>
+                {formik.errors.endDate && <Text style={{ ...styles.error }} variant='bodySmall'>{formik.errors.endDate}</Text>}
+                <DatePickerModal
+                  locale="en"
+                  mode="single"
+                  visible={endDatePickerOpen}
+                  onDismiss={onDismissEndDatePicker}
+                  onConfirm={(params) => onConfirmEndDatePicker(params, formik.setFieldValue)}
+                  saveLabel={<Text style={{color:"white"}}>Save</Text>}
+                  startYear={1958}
+                  endYear={2023}
+                  />
+              </View>
+            </View>
+            <Text tyle={{...styles.text_small}}>*Leave end date empty if ongoing</Text>
+          </View>
 
-        <View style={{ ...styles.row, ...styles.custom_card }}>
-          <Text variant="bodyLarge">Description </Text>
-          <TextInput numberOfLines={6} multiline style={{ ...styles.input }}
-              dense
-              onChangeText={formik.handleChange('description')}
-              value={formik.values.description}
-          ></TextInput>
-        </View>
+          <View style={{ ...styles.row, ...styles.custom_card }}>
+            <Text tyle={{...styles.text_medium}} variant="bodyLarge">Symptoms </Text>
+            <TextInput numberOfLines={4} multiline style={{ ...styles.input }}
+                dense
+                onChangeText={formik.handleChange('symptoms')}
+                value={formik.values.symptoms}
+            >
+            </TextInput>
+            {formik.errors.symptoms && <Text style={{ ...styles.error }} variant='bodySmall'>{formik.errors.symptoms}</Text>}
+          </View>
 
-        <Button onPress={formik.handleSubmit} mode="contained" style={{ ...styles.button }}>
-          Submit
-        </Button>
+          <View style={{ ...styles.row, ...styles.custom_card }}>
+            <Text style={{...styles.text_medium}} variant="bodyLarge">Description </Text>
+            <TextInput numberOfLines={6} multiline style={{ ...styles.input }}
+                dense
+                onChangeText={formik.handleChange('description')}
+                value={formik.values.description}
+            ></TextInput>
+            {formik.errors.description && <Text style={{ ...styles.error }} variant='bodySmall'>{formik.errors.description}</Text>}
+          </View>
+
+          <Button buttonColor={theme.colors.primary} onPress={formik.handleSubmit} mode="contained" style={{ ...styles.button }}>
+            Submit
+          </Button>
+        </View>
       </ScrollView>
     </View>
   );
@@ -224,13 +241,9 @@ const MedicalHistoryScreen = ({ route }) => {
 
 export default MedicalHistoryScreen;
 
-const styles = StyleSheet.create({
+const createStyles = ({colors}) => StyleSheet.create({
   root: {
     flex: 1,
-    marginTop: 5,
-    paddingBottom: 15,
-    paddingRight: 15,
-    paddingLeft: 15,
     elevation: 2
   },
   input: {
@@ -241,6 +254,10 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.5,
     shadowRadius: 2,
+  },
+  error: {
+    color: "red",
+    fontStyle: "italic"
   },
   button: {
     marginVertical: 10,
@@ -260,6 +277,18 @@ const styles = StyleSheet.create({
   centerX: {
     marginLeft: 'auto',
     marginRight: 'auto'
+  },
+  heading: {
+    color: colors.primaryText,
+    fontSize:20
+  },
+  text_medium : {
+    color: colors.primaryText,
+    fontSize:16
+  },
+  text_small : {
+      color: colors.primaryText,
+      fontSize:14
   },
   custom_card: {
     shadowColor: '#0000cc',
