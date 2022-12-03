@@ -20,6 +20,7 @@ CREATE TABLE User(
 CREATE TABLE Doctor(
 	userName  VARCHAR(255),
     docPoints INTEGER default 0,
+    PRIMARY KEY(userName),
     FOREIGN KEY(userName) REFERENCES User(userName)
 );
 
