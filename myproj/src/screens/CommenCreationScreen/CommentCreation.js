@@ -14,28 +14,18 @@ export default PostCreationScreen = (route) => {
     const navigation = useNavigation();
     const { auth } = useContext(authContext);
     const schema = yup.object({
-        title: yup.string().required("Required").max(250),
         body: yup.string().required("Required")
     });
-    Categories=[
-        {key:"1",value:"General"},
-        {key:"2",value:"Cardiovascular"},
-        {key:"3",value:"Neurology"},
-        {key:"4",value:"Dermatology"},
-        {key:"5",value:"Orthodontics"},
-        {key:"6",value:"Nephrology"},
-        {key:"7",value:"Mental Health"},
-        {key:"8",value:"Ophthalmology"},
-        {key:"9",value:"Gynecology"},
-        {key:"10",value:"ENT"}]
-    const [selected,setSelected] = React.useState("General");
-    const [selectedkey,setSelectedkey] = React.useState("1");
+
     const onSubmit = (formData) => {
         if(route.route.params){
         /* Send formData.title and formData.post  */
+        console.log(route.route.params)
         axios.post(
-            `http://${SERVER_IP}:${SERVER_PORT}/api/home/Edit?postId=${route.route.params.postId}`, 
+            `http://${SERVER_IP}:${SERVER_PORT}/api/home/main/${route.route.params.postId}/Post`, 
             {
+              postId:route.route.params.postId,
+              parentCommentId:route.route.params.commentId,
               title : formData.title,
               body : formData.body,
               userName:auth.userName,
@@ -63,39 +53,7 @@ export default PostCreationScreen = (route) => {
                 Alert.alert("404", "The server is irresponsive. Please try again later or contact support.");
             });
             }
-            else{
-                axios.post(
-                    `http://${SERVER_IP}:${SERVER_PORT}/api/home/Create`, 
-                    {
-                      title : formData.title,
-                      body : formData.body,
-                      userName:auth.userName,
-                      category:selected
-                    }, 
-                    {timeout : 10000})
-                    .then((response) => {
-    
-                      navigation.navigate("HomeScreen");
-                    })
-                    .catch( error => {
-                      if(error.response){
-                        switch(error.response.data.errorCode){
-                          case "auth/invalid-username-password":
-                            Alert.alert("Invalid Credentials", "The username or email is incorrect.");
-                            break;
-                          default:
-                            Alert.alert("Invalid request.", "Your request could not be processed. Please try again later or contact support.");
-                            break;
-                        }
-                      }
-                      else if(error){
-                        console.log(error)
-                      }
-                      else 
-                        Alert.alert("404", "The server is irresponsive. Please try again later or contact support.");
-                    });
 
-            }
 
     }
     return (
@@ -119,20 +77,8 @@ export default PostCreationScreen = (route) => {
                         style={{ backgroundColor: "#3796f3", position: 'absolute', bottom: 10, right: 10, zIndex: 1 }}
                         onPress={handleSubmit}
                     />
-                      <SelectList 
-                     setSelected={(val) => {setSelected(val);}} 
-                     data={Categories} 
-                     placeholder={"Select Post Category"}
-                     />
                     <ScrollView>
-                        <TextInput
-                            placeholder="Title"
-                            style={{ fontWeight: 'bold', backgroundColor: "transparent", fontSize: 25, paddingVertical: 10 }}
-                            mode='flat'
-                            value={values.title}
-                            onChangeText={handleChange("title")}
 
-                        />
                         
                         <HelperText
                             type="error"

@@ -10,6 +10,8 @@ import CertificationScreen from '../screens/CertificationScreen';
 import PostCreationScreen from '../screens/PostCreationScreen';
 import PolicyScreen from '../screens/PolicyScreen/PolicyScreen';
 import SettingsScreen from '../screens/SettingsScreen/SettingsScreen';
+import PostScreen from '../screens/PostScreen'
+import CommentScreen from '../screens/CommenCreationScreen'
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Footer from '../components/Footer';
 import React from 'react';
@@ -26,7 +28,9 @@ const Navigation = () => {
     Certification: CertificationScreen,
     PostCreation: PostCreationScreen,
     Policy: PolicyScreen,
-    Settings: SettingsScreen
+    Settings: SettingsScreen,
+    PostandComments:PostScreen,
+    CommentCreation:CommentScreen,
   }
   const [routeName, setrouteName] = React.useState();
   const navigationContainerRef = createNavigationContainerRef();

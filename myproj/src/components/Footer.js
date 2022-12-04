@@ -20,12 +20,6 @@ export default Footer = ({ routeName }) => {
             />
 
             <IconButton
-                icon="plus"
-                size={25}
-                onPress={() => navigation.navigate("PostCreation")}
-                disabled = {routeName === "PostCreation"}
-            />
-            <IconButton
                 icon={routeName === "Settings" ? "cog" : "cog-outline"}
                 size={25}
                 onPress={() => navigation.navigate("Settings")}

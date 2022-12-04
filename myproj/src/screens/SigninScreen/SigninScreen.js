@@ -73,6 +73,13 @@ const SigninScreen = () => {
         DocNet
       </Text>
 
+      <TextAnimator
+        content='Enjoy your stay'
+        textStyle={styles.textStyle}
+        style={styles.containerStyle}
+        duration={500}
+      />
+      
       <SigninForm results={onSignIn} />
       {/* <Button
         mode="outlined"

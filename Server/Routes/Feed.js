@@ -4,19 +4,24 @@ const User = require('../Model/User.model');
 const Validate = require('../MiddleWare/Validate');
 const UserController = require('../Controllers/User.controller');
 const{
-
-
-
-    
-} = require('../Controllers/User.controller')
+    GetPosts,
+    GetPost,
+    CreatePost,
+    DeletePost,
+    EditPost,    GetComments,
+    DeleteComment,PostComment
+} = require('../Controllers/FeedController')
 
 
 
 const Router = express.Router();
 
-Router.route('/register').post(  Validate(User.schema, User.createUser.params), Register);
-Router.route('/getUser/:userName').get(Validate(User.schema, User.getUserByUserName.params),SearchByName);
-Router.route('/signIn').post(Validate(User.schema, User.signIn.params),signIn);
-
-
+Router.route('/main').get( GetPosts);
+Router.route('/main/:postId').get( GetPost);
+Router.route('/Create').post(CreatePost)
+Router.route('/Delete').delete(DeletePost);
+Router.route('/Edit').post(EditPost);
+Router.route('/main/:postId/comments').get(GetComments);
+Router.route('/main/:postId/Post').post(PostComment);
+Router.route('/main/:postId/delete').delete(DeleteComment);
 module.exports = Router;
