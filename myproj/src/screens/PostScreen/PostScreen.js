@@ -39,9 +39,7 @@ useEffect(()=>{
   const onSelectUser=(userName)=>{
     console.log(userName)
     //Raahim do something here idk pass in the userName or userId and search for a profile and display it 
-    navigation.navigate("Profile"),{
-      userName: userName
-    };
+    navigation.navigate("Profile", userName)
   }
   const onDelete=(commentId)=>{
     axios.delete(`http://${SERVER_IP}:${SERVER_PORT}/api/home/main/${route.route.params.postId}/delete?commentId=${commentId}`)
