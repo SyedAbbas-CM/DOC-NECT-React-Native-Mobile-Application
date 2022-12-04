@@ -9,7 +9,7 @@ import SigninForm from '../../components/SigninForm';
 import { SERVER_IP, SERVER_PORT } from '../../../config';
 import { authContext, themeContext } from '../../context';
 import { useIsFocused } from "@react-navigation/native";
-
+import TextAnimator from '../../components/TextAnimator';
 const SigninScreen = () => {
   const { setAuth } = useContext(authContext);
   const { setTheme } = useContext(themeContext);
@@ -79,7 +79,7 @@ const SigninScreen = () => {
         style={styles.containerStyle}
         duration={500}
       />
-      
+
       <SigninForm results={onSignIn} />
       {/* <Button
         mode="outlined"
