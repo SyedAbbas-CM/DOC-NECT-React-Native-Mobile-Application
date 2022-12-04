@@ -30,6 +30,7 @@ const HomeScreen = () => {
   const [feed,setFeed] =useState([]);
   const [filterdata,setfilterdata]=useState([]);
   const [selected,setSelected] = React.useState("General");
+  const [isRefreshing, setIsRefresing] = useState(false);
   const navigation = useNavigation();
 
   const onSearch=()=>{
@@ -56,17 +57,30 @@ const HomeScreen = () => {
     })
   }
 
-   useEffect(()=>{
+  function onRefresh() {
+    fetchData();
+  }
+  
+  function fetchData() {
+      fetch(`http://${SERVER_IP}:${SERVER_PORT}/api/home/main?postId=${lastpostId}`)
+      .then((re)=>re.json())
+      .then((re)=>{
+        //console.log(re)
+        setFeed(re)
+        setfilterdata(re)
+      })
+  }
+
+  useEffect(()=>{
     fetch(`http://${SERVER_IP}:${SERVER_PORT}/api/home/main?postId=${lastpostId}`)
     .then((re)=>re.json())
     .then((re)=>{
       //console.log(re)
       setFeed(re)
       setfilterdata(re)
-
     })
-
   },[],)
+
   const renderLoader = () =>{
     return (
     <View style = {styles.footerLoader}>
@@ -111,13 +125,13 @@ const HomeScreen = () => {
         data={filterdata}
         keyExtractor={item=>{item.postId}}
         onEndReachedThreshold={1}
-        onEndReached={refreshData}
+        onEndReached={refreshData} 
         renderItem={({item})=>(
         
         <View style={styles.feedBox} paddingLeft={10} paddingRight={10} >
             <View style={styles.postTitle}>
 
-            <View ><Text style={styles.postUsername}>{"Posted by: "+item.userName+" on "+item.creationTime}</Text></View>
+            <View ><Text onPress={() => navigation.navigate("Profile", item.userName)} style={styles.postUsername}>{"Posted by: "+item.userName+" on "+item.creationTime}</Text></View>
 
               <Text style={styles.postTitle} >
               {item.title}
