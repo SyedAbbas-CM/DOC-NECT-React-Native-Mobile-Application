@@ -11,6 +11,7 @@ CREATE TABLE User(
     city	  VARCHAR(255),
     gender    enum('MALE', 'FEMALE', 'OTHER'),
     about     TEXT,
+    joinDate DATE DEFAULT ( CURRENT_DATE ),
     theme     enum('DARK', 'LIGHT'),
     privacy   enum('0', '1', '2'),
     primary key (userName)
