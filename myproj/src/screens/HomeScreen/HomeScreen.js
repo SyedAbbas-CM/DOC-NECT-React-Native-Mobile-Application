@@ -22,7 +22,7 @@ const HomeScreen = () => {
     {key:"9",value:"Gynecology"},
     {key:"10",value:"ENT"}]
 
-  let lastpostId=0;
+  // let lastpostId=0;
   const { setTheme} = useContext(themeContext);
   const { auth } = useContext(authContext);
   const { height,width } = useWindowDimensions();
@@ -44,25 +44,27 @@ const HomeScreen = () => {
     }
   }
   const onDelete=(id)=>{
+    console.log(id);
+    console.log("Hello");
     axios.delete(`http://${SERVER_IP}:${SERVER_PORT}/api/home/Delete?postId=${id}`)
-    refreshData();
+    onRefresh();
   }
-  const refreshData=()=>{
-    fetch(`http://${SERVER_IP}:${SERVER_PORT}/api/home/main?postId=${lastpostId-10}`)
-    .then((re)=>re.json())
-    .then((re)=>{
-      //console.log(re)
-      setFeed(re)
-      onSearch()
-    })
-  }
+  // const refreshData=()=>{
+  //   fetch(`http://${SERVER_IP}:${SERVER_PORT}/api/home/main?postId=${lastpostId-10}`)
+  //   .then((re)=>re.json())
+  //   .then((re)=>{
+  //     //console.log(re)
+  //     setFeed(re)
+  //     onSearch()
+  //   })
+  // }
 
   function onRefresh() {
     fetchData();
   }
   
   function fetchData() {
-      fetch(`http://${SERVER_IP}:${SERVER_PORT}/api/home/main?postId=${lastpostId}`)
+      fetch(`http://${SERVER_IP}:${SERVER_PORT}/api/home/main`)
       .then((re)=>re.json())
       .then((re)=>{
         //console.log(re)
@@ -72,7 +74,7 @@ const HomeScreen = () => {
   }
 
   useEffect(()=>{
-    fetch(`http://${SERVER_IP}:${SERVER_PORT}/api/home/main?postId=${lastpostId}`)
+    fetch(`http://${SERVER_IP}:${SERVER_PORT}/api/home/main`)
     .then((re)=>re.json())
     .then((re)=>{
       //console.log(re)
@@ -124,8 +126,10 @@ const HomeScreen = () => {
         contentContainerStyle={{ paddingBottom: 5 }}
         data={filterdata}
         keyExtractor={item=>{item.postId}}
-        onEndReachedThreshold={1}
-        onEndReached={refreshData} 
+        // onEndReachedThreshold={1}
+        // onEndReached={refreshData} 
+        onRefresh={onRefresh}
+        refreshing={isRefreshing}
         renderItem={({item})=>(
         
         <View style={styles.feedBox} paddingLeft={10} paddingRight={10} >

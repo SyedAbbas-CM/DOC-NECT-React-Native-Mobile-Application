@@ -4,8 +4,8 @@ const db = require('./../DB');
 
 const GetPosts = asyncWrapper(async (req, res,next) => {
     console.log(req.query)
-    const sql = `SELECT postId,title,userName,category,creationTime,body  FROM Post where postId > ? `
-    db.query(sql,[req.query.postId],(err, data) => {
+    const sql = `SELECT postId,title,userName,category,creationTime,body FROM Post`
+    db.query(sql,(err, data) => {
         if(err){
             console.log(err)
         }else{
