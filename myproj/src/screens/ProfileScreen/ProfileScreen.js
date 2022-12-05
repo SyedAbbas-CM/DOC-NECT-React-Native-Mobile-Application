@@ -130,8 +130,6 @@ const ProfileScreen = ({route}) => {
 
 
   function updateUserDetails(newUserDetails) {
-    setUser({...user, ...newUserDetails});
-
     axios.put(`http://${SERVER_IP}:${SERVER_PORT}/api/updateProfile`, newUserDetails,
       {
         headers: {
@@ -140,6 +138,7 @@ const ProfileScreen = ({route}) => {
         timeout : 5000,
       })
       .then((response) => {
+        setUser({...user, ...newUserDetails});
         console.log("Profile updated Successfully");
       })
       .catch(error => {
